@@ -256,7 +256,7 @@ El archivo `datos-prueba.sql` incluye:
 ---
 
 ## 🔑 Credenciales
-
+%%Falta implementar autenticación
 ### **Usuarios del Sistema**
 
 | Usuario    | Contraseña  | Rol     |
