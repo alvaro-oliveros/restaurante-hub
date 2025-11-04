@@ -1,0 +1,160 @@
+.landing-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+}
+
+.landing-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  color: white;
+}
+
+.landing-header h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.landing-header p {
+  font-size: 1.3rem;
+  opacity: 0.95;
+}
+
+.landing-cards {
+  display: flex;
+  gap: 3rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.landing-card {
+  background: white;
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  width: 280px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  transition: height 0.3s ease;
+}
+
+.cliente-card::before {
+  background: linear-gradient(90deg, #ff6b35 0%, #ff8c42 100%);
+}
+
+.admin-card::before {
+  background: linear-gradient(90deg, #4361ee 0%, #3a86ff 100%);
+}
+
+.landing-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.landing-card:hover::before {
+  height: 100%;
+  opacity: 0.1;
+}
+
+.card-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.cliente-card .card-icon {
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+  color: white;
+}
+
+.admin-card .card-icon {
+  background: linear-gradient(135deg, #4361ee 0%, #3a86ff 100%);
+  color: white;
+}
+
+.landing-card:hover .card-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.card-icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.landing-card h2 {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  color: #2d3748;
+  text-align: center;
+}
+
+.landing-card p {
+  color: #718096;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+}
+
+.card-arrow {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  transition: transform 0.3s ease;
+}
+
+.cliente-card .card-arrow {
+  color: #ff6b35;
+}
+
+.admin-card .card-arrow {
+  color: #4361ee;
+}
+
+.landing-card:hover .card-arrow {
+  transform: translateX(10px);
+}
+
+.landing-footer {
+  color: white;
+  opacity: 0.8;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .landing-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .landing-cards {
+    gap: 2rem;
+  }
+
+  .landing-card {
+    width: 240px;
+    padding: 2.5rem 2rem;
+  }
+}

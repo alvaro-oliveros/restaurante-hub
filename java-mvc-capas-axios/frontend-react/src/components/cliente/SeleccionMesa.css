@@ -1,0 +1,261 @@
+.seleccion-mesa-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #f9fafb;
+  min-height: 100vh;
+}
+
+.seleccion-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-top: 1rem;
+}
+
+.btn-back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  color: #374151;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-back:hover {
+  background: #f3f4f6;
+  border-color: #ff6b35;
+  color: #ff6b35;
+}
+
+.seleccion-header h1 {
+  color: #1f2937;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.seleccion-header p {
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+.filtros-container {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filtro-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filtro-group label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.filtro-group select {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  background: white;
+  color: #374151;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 180px;
+}
+
+.filtro-group select:hover {
+  border-color: #ff6b35;
+}
+
+.filtro-group select:focus {
+  outline: none;
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.mesas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.mesa-card {
+  background: white;
+  border-radius: 15px;
+  padding: 1.5rem;
+  border: 3px solid;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.mesa-card.disponible:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.mesa-card.no-disponible {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mesa-numero {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.mesa-icono {
+  font-size: 2.5rem;
+}
+
+.mesa-numero .numero {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.mesa-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-item .label {
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.info-item .value {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.mesa-estado {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.mesa-accion {
+  text-align: center;
+  color: #ff6b35;
+  font-weight: 600;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #f3f4f6;
+}
+
+.qr-section {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.qr-divider {
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.qr-divider::before,
+.qr-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 2px;
+  background: #e5e7eb;
+}
+
+.qr-divider::before {
+  left: 0;
+}
+
+.qr-divider::after {
+  right: 0;
+}
+
+.qr-divider span {
+  background: #f9fafb;
+  padding: 0 1rem;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.btn-qr {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+}
+
+.btn-qr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.2rem;
+  color: #6b7280;
+}
+
+.no-mesas {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 15px;
+  color: #6b7280;
+}
+
+@media (max-width: 768px) {
+  .seleccion-mesa-container {
+    padding: 1rem;
+  }
+
+  .seleccion-header h1 {
+    font-size: 2rem;
+    margin-top: 3rem;
+  }
+
+  .btn-back {
+    position: static;
+    margin-bottom: 1rem;
+  }
+
+  .mesas-grid {
+    grid-template-columns: 1fr;
+  }
+}
