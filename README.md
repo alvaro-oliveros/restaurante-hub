@@ -363,7 +363,7 @@ cd java-mvc-capas-axios/Java-mvc-capas-axios
 
 ## 📄 Licencia
 
-Proyecto académico - Universidad [Tu Universidad]
+Proyecto académico - UTEC
 
 ---
 
