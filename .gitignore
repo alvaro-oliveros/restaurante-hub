@@ -1,0 +1,36 @@
+# Maven
+java-mvc-capas-axios/Java-mvc-capas-axios/target/
+java-mvc-capas-axios/Java-mvc-capas-axios/.mvn/
+java-mvc-capas-axios/Java-mvc-capas-axios/mvnw
+java-mvc-capas-axios/Java-mvc-capas-axios/mvnw.cmd
+java-mvc-capas-axios/Java-mvc-capas-axios/.settings/
+java-mvc-capas-axios/Java-mvc-capas-axios/.project
+java-mvc-capas-axios/Java-mvc-capas-axios/.classpath
+
+# Node
+java-mvc-capas-axios/frontend-react/node_modules/
+java-mvc-capas-axios/frontend-react/dist/
+java-mvc-capas-axios/frontend-react/.vite/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.local
+
+# Build
+build/
+out/
