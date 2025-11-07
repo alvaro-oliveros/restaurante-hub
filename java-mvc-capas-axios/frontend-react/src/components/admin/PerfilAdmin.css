@@ -15,8 +15,7 @@
   background: white;
   border-bottom: 2px solid #e5e7eb;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 1000;
 }
 
@@ -53,8 +52,7 @@
   border-bottom: 1px solid #e5e7eb;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   flex-wrap: wrap;
-  position: sticky;
-  top: 86px;
+  position: relative;
   z-index: 999;
 }
 
@@ -81,7 +79,6 @@
   min-height: calc(100vh - 200px);
   background-color: #f9fafb;
   padding: 0;
-  padding-top: 2rem;
 }
 
 .gestion-menu,
@@ -90,7 +87,7 @@
 .reportes {
   max-width: 100%;
   margin: 0;
-  padding: 0 2rem 2rem 2rem;
+  padding: 2rem;
 }
 
 .gestion-menu h3,
