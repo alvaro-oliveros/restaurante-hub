@@ -92,6 +92,37 @@
   padding: 2rem;
 }
 
+.gestion-menu h3,
+.gestion-pedidos h3,
+.gestion-usuarios h3,
+.reportes h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+  font-size: 1.75rem;
+}
+
+.gestion-menu button:first-of-type,
+.gestion-usuarios button:first-of-type {
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #4361ee 0%, #3a86ff 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+}
+
+.gestion-menu button:first-of-type:hover,
+.gestion-usuarios button:first-of-type:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
