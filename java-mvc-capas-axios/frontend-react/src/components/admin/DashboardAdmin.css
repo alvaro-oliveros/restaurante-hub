@@ -5,6 +5,8 @@
   padding: 0;
   background-color: #f9fafb;
   min-height: calc(100vh - 200px);
+  position: relative;
+  z-index: 1;
 }
 
 .dashboard-header {

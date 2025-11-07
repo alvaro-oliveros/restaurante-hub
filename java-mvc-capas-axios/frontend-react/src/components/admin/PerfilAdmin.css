@@ -15,8 +15,9 @@
   background: white;
   border-bottom: 2px solid #e5e7eb;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  position: relative;
-  z-index: 100;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .admin-header h2 {
@@ -52,8 +53,9 @@
   border-bottom: 1px solid #e5e7eb;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   flex-wrap: wrap;
-  position: relative;
-  z-index: 99;
+  position: sticky;
+  top: 86px;
+  z-index: 999;
 }
 
 .tab {
