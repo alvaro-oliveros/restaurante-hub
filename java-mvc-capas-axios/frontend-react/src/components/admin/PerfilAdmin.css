@@ -80,6 +80,15 @@
 .tab-content {
   min-height: calc(100vh - 200px);
   background-color: #f9fafb;
+  padding: 2rem;
+}
+
+.gestion-menu,
+.gestion-pedidos,
+.gestion-usuarios,
+.reportes {
+  max-width: 100%;
+  margin: 0;
 }
 
 table {
