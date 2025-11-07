@@ -81,10 +81,15 @@
   min-height: calc(100vh - 200px);
   background-color: #f9fafb;
   padding: 0;
-  margin-top: 160px;
 }
 
-.gestion-menu,
+.gestion-menu {
+  max-width: 100%;
+  margin: 0;
+  margin-top: 160px;
+  padding: 2rem;
+}
+
 .gestion-pedidos,
 .gestion-usuarios,
 .reportes {
