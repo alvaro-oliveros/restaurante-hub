@@ -2,7 +2,7 @@
   width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: 2rem;
+  padding: 0 2rem 2rem 2rem;
   background-color: transparent;
   min-height: calc(100vh - 200px);
   position: relative;
