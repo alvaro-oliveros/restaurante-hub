@@ -26,6 +26,8 @@ function PerfilAdmin() {
         <NavLink to="/admin/reportes" className={({ isActive }) => isActive ? "tab active" : "tab"}>Reportes</NavLink>
       </div>
 
+      <div className="navbar-spacer"></div>
+
       <div className="tab-content">
         <Routes>
           <Route path="/" element={<DashboardAdmin />} />
