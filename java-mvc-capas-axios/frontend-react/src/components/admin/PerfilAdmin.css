@@ -80,7 +80,7 @@
 .tab-content {
   min-height: calc(100vh - 200px);
   background-color: #f9fafb;
-  padding: 2rem;
+  padding: 0;
 }
 
 .gestion-menu,
@@ -89,6 +89,7 @@
 .reportes {
   max-width: 100%;
   margin: 0;
+  padding: 2rem;
 }
 
 table {
