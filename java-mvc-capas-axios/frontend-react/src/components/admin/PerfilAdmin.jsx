@@ -1,4 +1,4 @@
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, NavLink, useNavigate } from 'react-router-dom';
 import DashboardAdmin from './DashboardAdmin';
 import GestionMenu from './GestionMenu';
 import GestionPedidos from './GestionPedidos';
@@ -19,11 +19,11 @@ function PerfilAdmin() {
       </div>
 
       <div className="tabs">
-        <Link to="/admin" className="tab">Dashboard</Link>
-        <Link to="/admin/menu" className="tab">Gestión de Menú</Link>
-        <Link to="/admin/pedidos" className="tab">Gestión de Pedidos</Link>
-        <Link to="/admin/usuarios" className="tab">Gestión de Usuarios</Link>
-        <Link to="/admin/reportes" className="tab">Reportes</Link>
+        <NavLink to="/admin" end className={({ isActive }) => isActive ? "tab active" : "tab"}>Dashboard</NavLink>
+        <NavLink to="/admin/menu" className={({ isActive }) => isActive ? "tab active" : "tab"}>Gestión de Menú</NavLink>
+        <NavLink to="/admin/pedidos" className={({ isActive }) => isActive ? "tab active" : "tab"}>Gestión de Pedidos</NavLink>
+        <NavLink to="/admin/usuarios" className={({ isActive }) => isActive ? "tab active" : "tab"}>Gestión de Usuarios</NavLink>
+        <NavLink to="/admin/reportes" className={({ isActive }) => isActive ? "tab active" : "tab"}>Reportes</NavLink>
       </div>
 
       <div className="tab-content">
