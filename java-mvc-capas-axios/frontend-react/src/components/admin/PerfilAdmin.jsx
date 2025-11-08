@@ -9,6 +9,11 @@ import './PerfilAdmin.css';
 function PerfilAdmin() {
   const navigate = useNavigate();
 
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuthenticated');
+    navigate('/admin/login');
+  };
+
   return (
     <div className="perfil-admin">
       <div className="admin-header">
@@ -16,6 +21,9 @@ function PerfilAdmin() {
           ← Inicio
         </button>
         <h2>Panel de Administración</h2>
+        <button className="btn-logout" onClick={handleLogout}>
+          Cerrar Sesión
+        </button>
       </div>
 
       <div className="tabs">
