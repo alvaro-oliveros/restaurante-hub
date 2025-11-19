@@ -28,25 +28,24 @@ INSERT INTO categorias_producto (id, nombre, descripcion) VALUES
 -- ============================================
 INSERT INTO productos (id, nombre, descripcion, cantidad, precio, categoria_id, imagen_url, disponible, rating, tiempo_preparacion, alergenos, veces_vendido, es_popular, es_vegetariano) VALUES
 -- Entradas
-(1, 'Ají de Gallina', 'Clásico guiso de pollo deshilachado en salsa de ají amarillo, servido con papas y arroz', 50, 32.00, 1, 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400', true, 4.8, 25, 'lactosa,frutos secos', 72, true, false),
-(2, 'Lomo Saltado', 'Clásico salteado de res con cebolla, tomate y ají, papas fritas y arroz', 45, 38.00, 2, 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400', true, 4.9, 20, 'mariscos', 89, true, false),
-(3, 'Ceviche de Pescado', 'Pescado fresco marinado en limón con cebolla roja, ají limo y camote', 30, 28.00, 1, 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400', true, 4.7, 10, 'mariscos', 95, true, false),
-(4, 'Arroz con Pollo', 'Arroz cocido con cerveza, culantro y pollo, servido con salsa criolla', 40, 25.00, 2, 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400', true, 4.5, 30, '', 45, false, false),
-(5, 'Causa Limeña', 'Puré de papa amarilla con limón, relleno de pollo o atún, palta y mayonesa', 35, 18.00, 1, 'https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=400', true, 4.6, 15, 'huevo', 52, false, false),
-(6, 'Anticuchos', 'Brochetas de corazón de res marinadas en ají panca, servidas con papas y choclo', 25, 22.00, 1, 'https://images.unsplash.com/photo-1529042410759-befb1204b468?w=400', true, 4.8, 20, '', 68, true, false),
-(7, 'Tacu Tacu con Lomo', 'Mezcla de arroz y frijoles con bistec de lomo, huevo frito y salsa criolla', 30, 35.00, 2, 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400', true, 4.4, 25, 'huevo', 34, false, false),
-(8, 'Rocoto Relleno', 'Rocoto relleno de carne picada, pasas y aceitunas, gratinado con queso', 20, 30.00, 2, 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400', true, 4.3, 35, 'lactosa', 28, false, false),
-(9, 'Papa a la Huancaína', 'Papas amarillas bañadas en salsa de ají amarillo, leche y queso', 50, 15.00, 1, 'https://images.unsplash.com/photo-1601000939631-763b5e34b0ce?w=400', true, 4.6, 10, 'lactosa', 56, false, true),
-(10, 'Pollo a la Brasa', 'Cuarto de pollo marinado y cocido a la leña, con papas fritas y ensalada', 35, 26.00, 2, 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400', true, 4.9, 35, '', 112, true, false),
+(1, 'Ají de Gallina', 'Clásico guiso de pollo deshilachado en salsa de ají amarillo, servido con papas y arroz', 50, 32.00, 1, 'https://imagenes.elpais.com/resizer/v2/FPKN2NFO7BBC7NQBAOKALTZM4M.jpg?auth=4da1571a11c5ffce1995f11e0319efa11a0610dc96dac47efd1a9ddf1567834f&width=1960&height=1470&smart=true', true, 4.8, 25, 'lactosa,frutos secos', 72, true, false),
+(2, 'Lomo Saltado', 'Clásico salteado de res con cebolla, tomate y ají, papas fritas y arroz', 45, 38.00, 2, 'https://www.oliveandmango.com/images/uploads/2022_07_18_lomo_saltado_2.jpg', true, 4.9, 20, 'mariscos', 89, true, false),
+(3, 'Ceviche de Pescado', 'Pescado fresco marinado en limón con cebolla roja, ají limo y camote', 30, 28.00, 1, 'https://mirecetadehoy.com/assets/images/ceviche-piurano_800x534.webp', true, 4.7, 10, 'mariscos', 95, true, false),
+(4, 'Arroz con Pollo', 'Arroz cocido con cerveza, culantro y pollo, servido con salsa criolla', 40, 25.00, 2, 'https://andococinando.com/wp-content/uploads/2020/09/arroz-con-pollo-peru.jpeg', true, 4.5, 30, '', 45, false, false),
+(5, 'Causa Limeña', 'Puré de papa amarilla con limón, relleno de pollo o atún, palta y mayonesa', 35, 18.00, 1, 'https://static.bainet.es/clip/452a8f7c-17f1-43d0-9f71-3bfd967266c7_source-aspect-ratio_1600w_0.jpg', true, 4.6, 15, 'huevo', 52, false, false),
+(6, 'Anticuchos', 'Brochetas de corazón de res marinadas en ají panca, servidas con papas y choclo', 25, 22.00, 1, 'https://discoverpuntahermosa.com/wp-content/uploads/2024/04/2-1-1024x553.jpg', true, 4.8, 20, '', 68, true, false),
+(7, 'Tacu Tacu con Lomo', 'Mezcla de arroz y frijoles con bistec de lomo, huevo frito y salsa criolla', 30, 35.00, 2, 'https://restauranteolimpico.com/wp-content/uploads/2022/11/tacu-tacu.jpg', true, 4.4, 25, 'huevo', 34, false, false),
+(8, 'Rocoto Relleno', 'Rocoto relleno de carne picada, pasas y aceitunas, gratinado con queso', 20, 30.00, 2, 'https://upload.wikimedia.org/wikipedia/commons/1/17/Rocoto_relleno.jpg', true, 4.3, 35, 'lactosa', 28, false, false),
+(9, 'Papa a la Huancaína', 'Papas amarillas bañadas en salsa de ají amarillo, leche y queso', 50, 15.00, 1, 'https://i.ytimg.com/vi/S5Ac-eaWfUU/sddefault.jpg', true, 4.6, 10, 'lactosa', 56, false, true),
+(10, 'Pollo a la Brasa', 'Cuarto de pollo marinado y cocido a la leña, con papas fritas y ensalada', 35, 26.00, 2, 'https://cocatambo.com/sites/default/files/descubre-pollo-brasa-cocatambo.webp', true, 4.9, 35, '', 112, true, false),
 -- Postres
-(11, 'Suspiro Limeño', 'Postre de manjar blanco cubierto con merengue de vino oporto', 40, 12.00, 3, 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400', true, 4.7, 5, 'huevo,lactosa', 42, false, true),
-(12, 'Picarones', 'Buñuelos de zapallo y camote bañados en miel de chancaca', 30, 10.00, 3, 'https://images.unsplash.com/photo-1612212338225-c3b6f3db3a0b?w=400', true, 4.5, 15, '', 38, false, true),
-(13, 'Mazamorra Morada', 'Postre morado de maíz morado con frutas y especias', 25, 8.00, 3, 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400', true, 4.4, 10, '', 24, false, true),
+(11, 'Suspiro Limeño', 'Postre de manjar blanco cubierto con merengue de vino oporto', 40, 12.00, 3, 'https://elcomercio.pe/resizer/v2/EHTND334Y5AODNPEKATE4AJWOU.jpg?auth=d299cb058e883dfdc4f1a51c24024b4f1c64f7d56013460e4d8e4b16aad58e00&width=1200&height=800&quality=75&smart=true', true, 4.7, 5, 'huevo,lactosa', 42, false, true),
+(12, 'Picarones', 'Buñuelos de zapallo y camote bañados en miel de chancaca', 30, 10.00, 3, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0lWRx-ZE1tNSoVg4U0RVz1ir7CgUIHeLuCg&s', true, 4.5, 15, '', 38, false, true),
+(13, 'Mazamorra Morada', 'Postre morado de maíz morado con frutas y especias', 25, 8.00, 3, 'https://www.comida-peruana.com/base/stock/Recipe/mazamorra-morada-estilo-peruano/mazamorra-morada-estilo-peruano_web.jpg.webp', true, 4.4, 10, '', 24, false, true),
 -- Bebidas
-(14, 'Chicha Morada', 'Refresco de maíz morado con piña, manzana y especias', 100, 5.00, 4, 'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=400', true, 4.8, 2, '', 85, true, true),
-(15, 'Inca Kola', 'Gaseosa peruana de sabor único', 80, 4.00, 4, 'https://images.unsplash.com/photo-1629203849780-d5a281a86081?w=400', true, 4.6, 1, '', 92, true, true),
-(16, 'Pisco Sour', 'Cóctel peruano de pisco, limón, jarabe y clara de huevo', 40, 18.00, 4, 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400', true, 4.9, 5, 'huevo', 76, true, false),
-(17, 'Jugo de Maracuyá', 'Jugo natural de maracuyá', 60, 6.00, 4, 'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400', true, 4.5, 3, '', 48, false, true);
+(14, 'Chicha Morada', 'Refresco de maíz morado con piña, manzana y especias', 100, 5.00, 4, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRon9pBtRVg_zkxeJYjPzwEV38D6WQ0fStQVQ&s', true, 4.8, 2, '', 85, true, true),
+(15, 'Inca Kola', 'Gaseosa peruana de sabor único', 80, 4.00, 4, 'https://plazavea.vteximg.com.br/arquivos/ids/30377881-512-512/gaseosa-inca-kola-sabor-original-paquete-6-botellas-1l-cu.jpg', true, 4.6, 1, '', 92, true, true),
+(16, 'Pisco Sour', 'Cóctel peruano de pisco, limón, jarabe y clara de huevo', 40, 18.00, 4, 'https://www.cenfotur.edu.pe/wp-content/uploads/2021/02/boletin05_img01-el-pisco-sour-patrimonio-cultural.jpg', true, 4.9, 5, 'huevo', 76, true, false);
 
 -- ============================================
 -- 3. MESAS DEL RESTAURANTE
