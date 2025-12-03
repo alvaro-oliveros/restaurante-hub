@@ -29,13 +29,20 @@ Sistema integral de gestión y atención para restaurantes desarrollado con **Ja
 - ✅ Gestión de perfil, direcciones y métodos de pago
 
 ### **Vista Administrador**
-- ✅ Dashboard con KPIs en tiempo real
-- ✅ Gestión de pedidos con estados visuales
-- ✅ Administración de menú (CRUD completo)
-- ✅ Control de inventario
-- ✅ Reportes y analytics
+- ✅ Dashboard con KPIs en tiempo real (ingresos, pedidos, hora pico, método principal)
+- ✅ Gestión de pedidos con flujo separado delivery/presencial (PENDIENTE → SERVIDO/PAGADO o → ENTREGADO)
+- ✅ Administración de menú (CRUD completo) e inventario
+- ✅ Monitoreo de estado de mesas (cambio de estado rápido y límite de mesas ocupadas)
+- ✅ Reportes y analytics (ventas por hora, método de pago, tendencia semanal)
+- ✅ Mapa de calor de delivery por distrito de Lima (últimos 30 días)
 - ✅ Gestión de usuarios y roles
-- ✅ Monitoreo de estado de mesas
+
+### **Novedades recientes**
+- Estado `SERVIDO` integrado en flujo presencial (frontend y backend) y validación de transición.
+- Dashboard refinado: KPIs compactos (Ingresos, Método Principal), etiquetas legibles y tope de ocupación por 10 mesas.
+- Mapa de calor de delivery (Leaflet) usando `/api/admin/reportes/delivery/heatmap` y centroides por distrito de Lima.
+- Seed de datos ampliado: 60 clientes, 230 pedidos de la última semana con estados realistas (máx. 10 presenciales activos), mezcla de métodos de pago y horarios operativos.
+- Tabla de gestión de mesas con distribución de columnas optimizada (sin espacio vacío a la derecha).
 
 ---
 
@@ -50,10 +57,10 @@ Sistema integral de gestión y atención para restaurantes desarrollado con **Ja
 - Lombok
 
 ### **Frontend**
-- React 18
-- Vite
+- React 19 + Vite 7
 - Axios
 - React Router DOM
+- Leaflet (mapa de delivery)
 
 ---
 
@@ -165,7 +172,9 @@ PUT    /api/pedidos/{id}/estado        - Actualizar estado
 PUT    /api/pedidos/{id}/cancelar      - Cancelar pedido
 ```
 
-**Estados de Pedido**: `PENDIENTE`, `CONFIRMADO`, `EN_PREPARACION`, `LISTO`, `ENTREGADO`, `CANCELADO`
+**Estados de Pedido** (presencial): `PENDIENTE`, `CONFIRMADO`, `EN_PREPARACION`, `LISTO`, `SERVIDO`, `PAGADO`, `CANCELADO`
+
+**Estados de Pedido** (delivery): `PENDIENTE`, `EN_PREPARACION`, `LISTO`, `RECOGIDO`, `ENTREGADO`, `CANCELADO`
 
 ### **Clientes**
 ```
@@ -207,6 +216,11 @@ GET    /api/admin/reportes/estadisticas  - Estadísticas generales
 GET    /api/admin/reportes/ventas/dia   - Ventas del día
 GET    /api/admin/reportes/ventas/mes   - Ventas del mes
 GET    /api/admin/reportes/ventas/rango - Ventas por rango de fechas
+GET    /api/admin/reportes/ventas/horas - Ventas por hora (día)
+GET    /api/admin/reportes/pagos        - Ventas por método de pago
+GET    /api/admin/reportes/stock/bajo   - Alertas de stock bajo
+GET    /api/admin/reportes/clientes-zonas - Top clientes y zonas
+GET    /api/admin/reportes/delivery/heatmap - Heatmap delivery por distrito (últimos 30 días)
 ```
 
 ---
@@ -248,9 +262,9 @@ proyecto_restaurante/
 El archivo `datos-prueba.sql` incluye:
 
 - **17 Productos** del menú peruano con imágenes
-- **10 Mesas** con diferentes estados y ubicaciones
-- **5 Clientes** con direcciones y métodos de pago
-- **5 Pedidos** de ejemplo
+- **10 Mesas** iniciales con ubicaciones
+- **60 Clientes** con direcciones y métodos de pago variados
+- **230 Pedidos** en la última semana (delivery/presencial, todos los métodos de pago, estados realistas con máximo 10 presenciales activos simultáneos)
 - **4 Usuarios** administrativos
 
 ---
@@ -294,13 +308,12 @@ Todos los productos incluyen:
 ## 📊 Dashboard de Administrador
 
 KPIs disponibles:
-- Ingresos del día/mes
-- Total de pedidos
-- Clientes activos
-- Tiempo promedio de atención
+- Ingresos del día
+- Pedidos del día y pedidos activos
+- Mesas ocupadas y porcentaje de ocupación
+- Hora pico y método de pago principal
 - Estado de mesas en tiempo real
 - Productos más vendidos
-- Ocupación de mesas
 
 ---
 
@@ -358,6 +371,15 @@ cd java-mvc-capas-axios/Java-mvc-capas-axios
 ```bash
 ./mvnw package
 ```
+
+### Subir cambios a GitHub
+```bash
+git status
+git add .
+git commit -m "Docs: actualizar README con features y seed realista"
+git push origin main
+```
+> Ajusta la rama remota si usas otra distinta de `main`.
 
 ---
 
