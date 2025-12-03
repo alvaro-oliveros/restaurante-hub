@@ -18,8 +18,28 @@ public class DireccionService {
 
     // Obtener direcciones de un cliente
     public List<DireccionDTO> obtenerPorClienteId(Long clienteId) {
-        return direccionRepository.findByClienteId(clienteId)
-                .stream()
+        List<Direccion> direcciones = direccionRepository.findByClienteId(clienteId);
+
+        // Si no hay direcciones pero el cliente tiene datos de dirección, crear una principal
+        if (direcciones.isEmpty()) {
+            clienteRepository.findById(clienteId).ifPresent(cliente -> {
+                if (cliente.getDireccion() != null && !cliente.getDireccion().isBlank()) {
+                    Direccion direccion = new Direccion();
+                    direccion.setAlias("Principal");
+                    direccion.setDireccion(cliente.getDireccion());
+                    direccion.setDistrito(cliente.getDistrito());
+                    direccion.setCiudad(cliente.getCiudad());
+                    direccion.setCodigoPostal(cliente.getCodigoPostal());
+                    direccion.setReferencia(cliente.getReferencia());
+                    direccion.setEsPrincipal(true);
+                    direccion.setCliente(cliente);
+                    direccionRepository.save(direccion);
+                }
+            });
+            direcciones = direccionRepository.findByClienteId(clienteId);
+        }
+
+        return direcciones.stream()
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }

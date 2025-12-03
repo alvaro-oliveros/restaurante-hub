@@ -9,8 +9,6 @@ function SeleccionMesa() {
   const [loading, setLoading] = useState(true);
   const [filtroEstado, setFiltroEstado] = useState('DISPONIBLE');
   const [filtroUbicacion, setFiltroUbicacion] = useState('TODAS');
-  const [modo, setModo] = useState('local'); // local | delivery
-  const [clienteLogueado, setClienteLogueado] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -21,17 +19,10 @@ function SeleccionMesa() {
   useEffect(() => {
     const modoUrl = searchParams.get('modo');
     if (modoUrl === 'delivery') {
-      setModo('delivery');
-    } else if (modoUrl === 'local') {
-      setModo('local');
+      // Redirigir al login/menú delivery directamente
+      navigate('/cliente/login?redirect=/cliente/menu/delivery', { replace: true });
     }
   }, [searchParams]);
-
-  useEffect(() => {
-    fetchClienteActual()
-      .then(setClienteLogueado)
-      .catch(() => setClienteLogueado(null));
-  }, []);
 
   const cargarMesas = async () => {
     try {
@@ -90,12 +81,6 @@ function SeleccionMesa() {
     );
   }
 
-  const cambiarModo = (nuevoModo) => {
-    setModo(nuevoModo);
-    searchParams.set('modo', nuevoModo);
-    setSearchParams(searchParams, { replace: true });
-  };
-
   return (
     <div className="seleccion-mesa-container">
       <div className="seleccion-header">
@@ -106,53 +91,7 @@ function SeleccionMesa() {
         <p>Elige una mesa disponible para comenzar tu pedido</p>
       </div>
 
-      <div className="toggle-modo">
-        <button
-          className={modo === 'local' ? 'tab active' : 'tab'}
-          onClick={() => cambiarModo('local')}
-        >
-          En el local
-        </button>
-        <button
-          className={modo === 'delivery' ? 'tab active' : 'tab'}
-          onClick={() => cambiarModo('delivery')}
-        >
-          Delivery
-        </button>
-      </div>
-
-      {modo === 'delivery' && (
-        <div className="delivery-card">
-          <div>
-            <h3>¿Prefieres delivery?</h3>
-            <p>Inicia sesión o regístrate para pedir a domicilio. Costo de delivery fijo.</p>
-            <ul>
-              <li>1. Inicia sesión o crea tu cuenta</li>
-              <li>2. Elige tus platos y dirección</li>
-              <li>3. Confirma el pedido y paga</li>
-            </ul>
-          </div>
-          <div className="delivery-actions">
-            {clienteLogueado ? (
-              <button className="btn-primary" onClick={() => navigate('/cliente/menu/delivery', { replace: true })}>
-                Ir al menú
-              </button>
-            ) : (
-              <>
-                <button className="btn-primary" onClick={() => navigate('/cliente/login?redirect=/cliente/menu/delivery')}>
-                  Iniciar sesión
-                </button>
-                <button className="btn-secondary" onClick={() => navigate('/cliente/registro?redirect=/cliente/menu/delivery')}>
-                  Crear cuenta
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-
-      {modo === 'local' && (
-        <>
+      <>
           <div className="filtros-container">
             <div className="filtro-group">
               <label>Estado:</label>

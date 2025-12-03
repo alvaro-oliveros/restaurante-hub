@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import productoService from '../../services/productoService';
 import pedidoService from '../../services/pedidoService';
-import { fetchClienteActual } from '../../services/authService';
+import { fetchClienteActual, logoutCliente } from '../../services/authService';
+import SeguimientoPedido from '../common/SeguimientoPedido';
 import './CatalogoMenu.css';
 
 const DELIVERY_FEE = 5.0;
@@ -21,6 +22,7 @@ function CatalogoMenuDelivery() {
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
   const [medioPago, setMedioPago] = useState('YAPE');
   const [cliente, setCliente] = useState(null);
+  const [pedidoEnCursoId, setPedidoEnCursoId] = useState(null);
 
   useEffect(() => {
     fetchClienteActual()
@@ -28,6 +30,10 @@ function CatalogoMenuDelivery() {
       .catch(() => {
         navigate('/cliente/login?redirect=/cliente/menu/delivery', { replace: true });
       });
+    const almacenado = localStorage.getItem('pedidoEnCursoDelivery');
+    if (almacenado) {
+      setPedidoEnCursoId(Number(almacenado));
+    }
   }, [navigate]);
 
   useEffect(() => {
@@ -185,6 +191,8 @@ function CatalogoMenuDelivery() {
 
       const pedidoCreado = await pedidoService.crear(payload);
       setCarrito([]);
+      setPedidoEnCursoId(pedidoCreado.id);
+      localStorage.setItem('pedidoEnCursoDelivery', pedidoCreado.id);
       alert(`Pedido confirmado y pago con ${medioPagoLabel(medioPago)}.\nNúmero de pedido: ${pedidoCreado.id}`);
     } catch (error) {
       console.error('Error al confirmar pedido delivery:', error);
@@ -220,10 +228,46 @@ function CatalogoMenuDelivery() {
 
   return (
     <div className="catalogo-container">
-      <div className="catalogo-header">
-        <button className="btn-back" onClick={() => navigate('/cliente/mesas?modo=delivery')}>
-          ← Volver
-        </button>
+      <div className="delivery-nav">
+        <div className="nav-left">
+          <button className="btn-back" onClick={() => navigate('/')}>← Inicio</button>
+        </div>
+        <div className="nav-right">
+          <button className="btn-nav" onClick={() => navigate('/cliente/pedidos')}>Seguimiento</button>
+          <button className="btn-nav" onClick={() => navigate('/cliente/datos')}>Mi perfil</button>
+          <button
+            className="btn-nav"
+            onClick={async () => {
+              await logoutCliente();
+              localStorage.removeItem('pedidoEnCursoDelivery');
+              navigate('/cliente/login?redirect=/cliente/menu/delivery', { replace: true });
+            }}
+          >
+            Cerrar sesión
+          </button>
+        </div>
+      </div>
+
+      {pedidoEnCursoId && (
+        <div className="seguimiento-wrapper">
+          <div className="seguimiento-info pedido-en-curso">
+            <span>Pedido en curso: #{pedidoEnCursoId}</span>
+            <button
+              type="button"
+              className="btn-secundario btn-mini"
+              onClick={() => {
+                setPedidoEnCursoId(null);
+                localStorage.removeItem('pedidoEnCursoDelivery');
+              }}
+            >
+              Limpiar
+            </button>
+          </div>
+          <SeguimientoPedido pedidoId={pedidoEnCursoId} refrescarCada={8000} />
+        </div>
+      )}
+
+      <div className="catalogo-header catalogo-header--compact">
         <div className="header-info">
           <h1>Menú Delivery</h1>
           {cliente && <p>Pedido para: {cliente.nombre} {cliente.apellido}</p>}

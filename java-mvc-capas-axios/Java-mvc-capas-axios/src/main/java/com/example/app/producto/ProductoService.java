@@ -70,6 +70,13 @@ public class ProductoService {
         producto.setEsVegetariano(productoDTO.getEsVegetariano());
         producto.setDisponible(productoDTO.getDisponible());
         producto.setDisponibleDelivery(productoDTO.getDisponibleDelivery());
+        if (productoDTO.getCategoriaId() != null) {
+            CategoriaProducto categoria = new CategoriaProducto();
+            categoria.setId(productoDTO.getCategoriaId());
+            producto.setCategoria(categoria);
+        } else {
+            producto.setCategoria(null);
+        }
 
         Producto productoActualizado = productoRepository.save(producto);
         return convertirADTO(productoActualizado);

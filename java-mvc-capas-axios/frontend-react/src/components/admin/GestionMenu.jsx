@@ -30,12 +30,15 @@ const PRODUCTO_BASE = {
 };
 
 function GestionMenu() {
+  const normalizar = (valor) => (valor ? valor.toString().trim().toLowerCase() : '');
+  const ordenarPorId = (lista) => [...lista].sort((a, b) => Number(a.id) - Number(b.id));
   const [productos, setProductos] = useState([]);
   const [modo, setModo] = useState('local');
   const [pestanaPrecio, setPestanaPrecio] = useState('local');
   const [mostrarModal, setMostrarModal] = useState(false);
   const [editando, setEditando] = useState(false);
   const [productoActual, setProductoActual] = useState({ ...PRODUCTO_BASE });
+
 
   useEffect(() => {
     cargarProductos();
@@ -44,7 +47,20 @@ function GestionMenu() {
   const cargarProductos = async () => {
     try {
       const data = await productoService.obtenerTodos();
-      setProductos(data);
+      const enriquecidos = data.map((p) => {
+        const categoriaIdEncontrada =
+          p.categoriaId
+          ?? p.categoria?.id
+          ?? CATEGORIAS.find((c) => normalizar(c.nombre) === normalizar(p.categoriaNombre || p.categoria?.nombre))?.id
+          ?? null;
+        const categoriaNombreEncontrado = p.categoriaNombre || p.categoria?.nombre || '';
+        return {
+          ...p,
+          categoriaId: categoriaIdEncontrada !== null ? String(categoriaIdEncontrada) : '',
+          categoriaNombre: categoriaNombreEncontrado,
+        };
+      });
+      setProductos(ordenarPorId(enriquecidos));
     } catch (error) {
       console.error('Error al cargar productos:', error);
     }
@@ -62,8 +78,10 @@ function GestionMenu() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const categoriaId = productoActual.categoriaId !== '' ? parseInt(productoActual.categoriaId, 10) : null;
       const payload = {
         ...productoActual,
+        categoriaId,
         precio: parseFloat(productoActual.precio || 0),
         precioDelivery: productoActual.precioDelivery !== '' && productoActual.precioDelivery !== null
           ? parseFloat(productoActual.precioDelivery)
@@ -94,15 +112,46 @@ function GestionMenu() {
     }
   };
 
-  const editarProducto = (producto) => {
-    setProductoActual({
-      ...producto,
-      precioDelivery: producto.precioDelivery ?? '',
-      disponibleDelivery: producto.disponibleDelivery ?? true,
-    });
+  const editarProducto = async (producto) => {
+    // Primero configuramos el modo de edición pero SIN abrir el modal aún
     setEditando(true);
     setPestanaPrecio(modo === 'delivery' ? 'delivery' : 'local');
-    setMostrarModal(true);
+
+    let detalle = producto;
+    try {
+      const data = await productoService.obtenerPorId(producto.id);
+      detalle = data;
+    } catch (error) {
+      console.error('No se pudo obtener detalle, se usa cache de la tabla', error);
+    }
+
+    // Determinar categoriaId de forma robusta
+    let categoriaId = detalle.categoriaId ?? detalle.categoria?.id;
+
+    // Si no hay ID, buscar por nombre
+    if (!categoriaId) {
+      const nombreCategoria = detalle.categoriaNombre || detalle.categoria?.nombre;
+      if (nombreCategoria) {
+        const cat = CATEGORIAS.find((c) => normalizar(c.nombre) === normalizar(nombreCategoria));
+        categoriaId = cat?.id;
+      }
+    }
+
+    const productoParaEditar = {
+      ...detalle,
+      categoriaId: categoriaId ? String(categoriaId) : '',
+      categoriaNombre: detalle.categoriaNombre || detalle.categoria?.nombre || '',
+      precioDelivery: detalle.precioDelivery ?? '',
+      disponibleDelivery: detalle.disponibleDelivery ?? true,
+    };
+
+    // Primero actualizamos el producto actual
+    setProductoActual(productoParaEditar);
+
+    // Luego abrimos el modal en el siguiente tick para asegurar que el estado se actualizó
+    setTimeout(() => {
+      setMostrarModal(true);
+    }, 0);
   };
 
   const resetForm = () => {
@@ -142,7 +191,7 @@ function GestionMenu() {
         <div className="stock-tag">Stock único para ambos modos</div>
       </div>
 
-      {mostrarModal && (
+      {mostrarModal && (editando ? productoActual.id : true) && (
         <div className="modal-overlay">
           <div className="modal modal-admin">
             <h3>{editando ? 'Editar producto' : 'Nuevo producto'}</h3>
@@ -171,15 +220,15 @@ function GestionMenu() {
                   />
                   <label>Categoría</label>
                   <select
-                    value={productoActual.categoriaId}
+                    value={productoActual.categoriaId || ''}
                     onChange={(e) => setProductoActual({
                       ...productoActual,
-                      categoriaId: parseInt(e.target.value, 10) || '',
+                      categoriaId: e.target.value,
                     })}
                   >
                     <option value="">Selecciona categoría</option>
                     {CATEGORIAS.map((cat) => (
-                      <option key={cat.id} value={cat.id}>{cat.nombre}</option>
+                      <option key={cat.id} value={String(cat.id)}>{cat.nombre}</option>
                     ))}
                   </select>
                   <label>URL de imagen</label>

@@ -96,10 +96,13 @@ function DashboardAdmin() {
         p.estado === 'SERVIDO'
       )
       .sort((a, b) => {
+        const idA = Number(a.id) || 0;
+        const idB = Number(b.id) || 0;
+        if (idA !== idB) return idB - idA; // ID más alto primero
         const fa = a.fechaPedido ? new Date(a.fechaPedido).getTime() : 0;
         const fb = b.fechaPedido ? new Date(b.fechaPedido).getTime() : 0;
-        if (fb !== fa) return fb - fa;
-        return (b.id || 0) - (a.id || 0);
+        if (fb !== fa) return fb - fa; // más reciente primero
+        return 0;
       });
   };
 

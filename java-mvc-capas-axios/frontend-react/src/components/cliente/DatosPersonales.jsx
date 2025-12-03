@@ -39,9 +39,13 @@ function DatosPersonales({ clienteId }) {
       await clienteService.actualizar(clienteId, cliente);
       setMensaje('Datos actualizados correctamente');
       setEditando(false);
+      // Clear message after 3 seconds
+      setTimeout(() => setMensaje(''), 3000);
     } catch (error) {
       setMensaje('Error al actualizar los datos');
       console.error(error);
+      // Clear error message after 5 seconds
+      setTimeout(() => setMensaje(''), 5000);
     }
   };
 
@@ -112,16 +116,27 @@ function DatosPersonales({ clienteId }) {
 
         <div className="form-actions">
           {!editando ? (
-            <button type="button" onClick={() => setEditando(true)}>
+            <button
+              type="button"
+              className="btn-nav"
+              onClick={(e) => {
+                e.preventDefault();
+                setMensaje('');
+                setEditando(true);
+              }}
+            >
               Editar
             </button>
           ) : (
             <>
-              <button type="submit">Guardar</button>
+              <button type="submit" className="btn-nav">Guardar</button>
               <button
                 type="button"
-                onClick={() => {
+                className="btn-secundario"
+                onClick={(e) => {
+                  e.preventDefault();
                   setEditando(false);
+                  setMensaje('');
                   cargarCliente();
                 }}
               >

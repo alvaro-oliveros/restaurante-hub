@@ -3,6 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import productoService from '../../services/productoService';
 import pedidoService from '../../services/pedidoService';
 import mesaService from '../../services/mesaService';
+import SeguimientoPedido from '../common/SeguimientoPedido';
 import './CatalogoMenu.css';
 
 const METODOS_PAGO_LOCAL = [
@@ -30,6 +31,7 @@ function CatalogoMenu() {
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
   const [medioPago, setMedioPago] = useState('EFECTIVO');
   const [pagoEnMesa, setPagoEnMesa] = useState(true);
+  const [pedidoEnCursoId, setPedidoEnCursoId] = useState(null);
 
   // Hasta que haya autenticación real, usamos un cliente fijo
   const clienteId = 1;
@@ -43,7 +45,11 @@ function CatalogoMenu() {
 
   useEffect(() => {
     cargarProductos();
-  }, []);
+    const almacenado = localStorage.getItem(`pedidoEnCursoMesa_${mesaId}`);
+    if (almacenado) {
+      setPedidoEnCursoId(Number(almacenado));
+    }
+  }, [mesaId]);
 
   useEffect(() => {
     aplicarFiltros();
@@ -179,8 +185,9 @@ function CatalogoMenu() {
       setCarrito([]);
       setPagoEnMesa(true);
       setMedioPago('EFECTIVO');
+      setPedidoEnCursoId(pedidoCreado.id);
+      localStorage.setItem(`pedidoEnCursoMesa_${mesaId}`, pedidoCreado.id);
       alert(`Pedido confirmado. Número de pedido: ${pedidoCreado.id}`);
-      navigate('/cliente/mesas');
     } catch (error) {
       console.error('Error al confirmar pedido:', error);
       const serverMessage = error.response?.data?.message;
@@ -224,6 +231,25 @@ function CatalogoMenu() {
           <p>Mesa #{mesaId}</p>
         </div>
       </div>
+
+      {pedidoEnCursoId && (
+        <div className="seguimiento-wrapper">
+          <div className="seguimiento-info">
+            <strong>Pedido en curso:</strong> #{pedidoEnCursoId}
+            <button
+              type="button"
+              className="btn-secundario btn-mini"
+              onClick={() => {
+                setPedidoEnCursoId(null);
+                localStorage.removeItem(`pedidoEnCursoMesa_${mesaId}`);
+              }}
+            >
+              Limpiar
+            </button>
+          </div>
+          <SeguimientoPedido pedidoId={pedidoEnCursoId} refrescarCada={7000} />
+        </div>
+      )}
 
       <div className="filtros-menu">
         <div className="busqueda-container">

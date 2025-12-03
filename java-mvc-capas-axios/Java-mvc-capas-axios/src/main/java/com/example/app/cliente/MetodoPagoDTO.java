@@ -29,6 +29,5 @@ public class MetodoPagoDTO {
 
     private Boolean esPrincipal;
 
-    @NotNull(message = "El ID del cliente es obligatorio")
     private Long clienteId;
 }

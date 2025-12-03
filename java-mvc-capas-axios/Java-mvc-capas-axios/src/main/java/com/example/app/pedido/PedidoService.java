@@ -29,6 +29,7 @@ public class PedidoService {
     private final ProductoRepository productoRepository;
     private final DetallePedidoRepository detallePedidoRepository;
     private final MesaRepository mesaRepository;
+    private final PedidoEstadoHistorialRepository pedidoEstadoHistorialRepository;
 
     // Obtener todos los pedidos
     public List<PedidoDTO> obtenerTodos() {
@@ -176,6 +177,7 @@ public class PedidoService {
         pedido.setDetalles(detalles);
 
         Pedido pedidoFinal = pedidoRepository.save(pedido);
+        registrarCambioEstado(pedidoFinal, pedidoFinal.getEstado());
 
         // Marcar la mesa como ocupada si corresponde
         if (pedidoFinal.getMesa() != null) {
@@ -250,6 +252,7 @@ public class PedidoService {
         }
 
         pedido.setEstado(nuevoEstado);
+        registrarCambioEstado(pedido, nuevoEstado);
 
         // Si es presencial y se marca PAGADO, liberar la mesa
         if (pedido.getTipo() == Pedido.TipoPedido.PRESENCIAL && nuevoEstado == Pedido.EstadoPedido.PAGADO) {
@@ -317,6 +320,16 @@ public class PedidoService {
         return actualizarEstado(id, Pedido.EstadoPedido.CANCELADO);
     }
 
+    public List<PedidoEstadoHistorialDTO> obtenerHistorial(Long pedidoId) {
+        if (!pedidoRepository.existsById(pedidoId)) {
+            throw new ResourceNotFoundException("Pedido no encontrado con id: " + pedidoId);
+        }
+        return pedidoEstadoHistorialRepository.findByPedidoIdOrderByFechaCambioAsc(pedidoId)
+                .stream()
+                .map(h -> new PedidoEstadoHistorialDTO(h.getEstado(), h.getFechaCambio()))
+                .collect(Collectors.toList());
+    }
+
     // Obtener pedidos entre fechas (para reportes)
     public List<PedidoDTO> obtenerPorRangoFechas(LocalDateTime inicio, LocalDateTime fin) {
         return pedidoRepository.findByFechaPedidoBetween(inicio, fin)
@@ -368,5 +381,13 @@ public class PedidoService {
         dto.setSubtotal(detalle.getSubtotal());
         dto.setPersonalizacion(detalle.getPersonalizacion());
         return dto;
+    }
+
+    private void registrarCambioEstado(Pedido pedido, Pedido.EstadoPedido nuevoEstado) {
+        PedidoEstadoHistorial historial = new PedidoEstadoHistorial();
+        historial.setPedido(pedido);
+        historial.setEstado(nuevoEstado);
+        historial.setFechaCambio(LocalDateTime.now());
+        pedidoEstadoHistorialRepository.save(historial);
     }
 }

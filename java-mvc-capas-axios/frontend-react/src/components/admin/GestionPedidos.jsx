@@ -54,7 +54,13 @@ function GestionPedidos() {
         const touchA = touchMap[a.id] || 0;
         const touchB = touchMap[b.id] || 0;
         if (touchA !== touchB) return touchB - touchA;
-        return new Date(b.fechaPedido) - new Date(a.fechaPedido);
+        const idA = Number(a.id) || 0;
+        const idB = Number(b.id) || 0;
+        if (idA !== idB) return idB - idA; // más alto primero
+        const fechaA = a.fechaPedido ? new Date(a.fechaPedido).getTime() : 0;
+        const fechaB = b.fechaPedido ? new Date(b.fechaPedido).getTime() : 0;
+        if (fechaA !== fechaB) return fechaB - fechaA;
+        return 0;
       });
   };
 

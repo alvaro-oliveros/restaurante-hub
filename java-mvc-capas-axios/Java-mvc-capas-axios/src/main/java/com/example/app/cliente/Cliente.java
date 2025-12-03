@@ -40,12 +40,6 @@ public class Cliente {
     @Column(nullable = false, length = 200)
     private String direccion;
 
-    @Column(length = 50)
-    private String tipoVia;
-
-    @Column(length = 20)
-    private String numero;
-
     @Column(length = 100)
     private String distrito;
 

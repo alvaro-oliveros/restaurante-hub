@@ -25,6 +25,12 @@ const pedidoService = {
     return response.data;
   },
 
+  // Obtener historial de un pedido
+  obtenerHistorial: async (id) => {
+    const response = await api.get(`/pedidos/${id}/historial`);
+    return response.data;
+  },
+
   // Crear pedido
   crear: async (pedido) => {
     const response = await api.post('/pedidos', pedido);

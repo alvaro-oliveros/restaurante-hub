@@ -363,6 +363,7 @@
 .producto-form__panel textarea,
 .producto-form__panel select {
   background: #fff;
+  color: #0f172a;
 }
 
 .panel-header {
@@ -507,6 +508,7 @@
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   font-size: 0.95rem;
+  color: #0f172a;
 }
 
 .modal-admin textarea {

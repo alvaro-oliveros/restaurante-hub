@@ -67,4 +67,11 @@ public class PedidoController {
         PedidoDTO pedidoCancelado = pedidoService.cancelar(id);
         return ResponseEntity.ok(pedidoCancelado);
     }
+
+    // GET - Historial de estados de un pedido
+    @GetMapping("/{id}/historial")
+    public ResponseEntity<List<PedidoEstadoHistorialDTO>> obtenerHistorial(@PathVariable Long id) {
+        List<PedidoEstadoHistorialDTO> historial = pedidoService.obtenerHistorial(id);
+        return ResponseEntity.ok(historial);
+    }
 }

@@ -10,8 +10,6 @@ const initialForm = {
   password: '',
   telefono: '',
   direccion: '',
-  tipoVia: 'Calle',
-  numero: '',
   distrito: '',
   ciudad: '',
   codigoPostal: '',
@@ -28,7 +26,7 @@ function ClienteAuth() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const redirect = searchParams.get('redirect') || '/cliente/menu/delivery';
+  const redirect = searchParams.get('redirect') || '/cliente/datos';
 
   useEffect(() => {
     const search = new URLSearchParams(location.search);
@@ -142,16 +140,6 @@ function ClienteAuth() {
                     Dirección
                     <input name="direccion" value={form.direccion} onChange={handleChange} required />
                   </label>
-                  <div className="cliente-auth__grid">
-                    <label>
-                      Tipo de vía (calle/avenida)
-                      <input name="tipoVia" value={form.tipoVia} onChange={handleChange} required />
-                    </label>
-                    <label>
-                      Número
-                      <input name="numero" value={form.numero} onChange={handleChange} required />
-                    </label>
-                  </div>
                   <div className="cliente-auth__grid">
                     <label>
                       Distrito

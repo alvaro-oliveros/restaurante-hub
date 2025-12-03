@@ -15,7 +15,8 @@ const metodoPagoService = {
 
   // Crear método de pago
   crear: async (clienteId, metodoPago) => {
-    const response = await api.post(`/clientes/${clienteId}/metodos-pago`, metodoPago);
+    const payload = { ...metodoPago, clienteId };
+    const response = await api.post(`/clientes/${clienteId}/metodos-pago`, payload);
     return response.data;
   },
 

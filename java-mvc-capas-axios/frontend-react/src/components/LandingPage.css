@@ -140,6 +140,21 @@
   background: rgba(255, 255, 255, 0.25);
 }
 
+.landing-client-card.delivery {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.landing-client-card.delivery .client-icon {
+  background: linear-gradient(135deg, #22d3ee, #6366f1);
+  box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
+}
+
+.landing-client-card.delivery .client-action {
+  background: rgba(99, 102, 241, 0.18);
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
 .landing-footer {
   color: rgba(255, 255, 255, 0.7);
   margin-top: 1rem;

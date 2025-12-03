@@ -2,6 +2,8 @@ package com.example.app.common.security;
 
 import com.example.app.cliente.Cliente;
 import com.example.app.cliente.ClienteRepository;
+import com.example.app.cliente.Direccion;
+import com.example.app.cliente.DireccionRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -25,6 +27,7 @@ public class AuthController {
     private final ClienteRepository clienteRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final DireccionRepository direccionRepository;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -39,8 +42,6 @@ public class AuthController {
         cliente.setTelefono(request.getTelefono());
         cliente.setDireccion(request.getDireccion());
         cliente.setDocumentoIdentidad(request.getDocumentoIdentidad());
-        cliente.setTipoVia(request.getTipoVia());
-        cliente.setNumero(request.getNumero());
         cliente.setDistrito(request.getDistrito());
         cliente.setCiudad(request.getCiudad());
         cliente.setCodigoPostal(request.getCodigoPostal());
@@ -48,6 +49,18 @@ public class AuthController {
         cliente.setPassword(passwordEncoder.encode(request.getPassword()));
         cliente.setActivo(true);
         Cliente guardado = clienteRepository.save(cliente);
+
+        // Crear dirección principal para el cliente
+        Direccion direccion = new Direccion();
+        direccion.setAlias("Principal");
+        direccion.setDireccion(request.getDireccion());
+        direccion.setDistrito(request.getDistrito());
+        direccion.setCiudad(request.getCiudad());
+        direccion.setCodigoPostal(request.getCodigoPostal());
+        direccion.setReferencia(request.getReferencia());
+        direccion.setEsPrincipal(true);
+        direccion.setCliente(guardado);
+        direccionRepository.save(direccion);
 
         return buildAuthResponse(guardado);
     }
@@ -117,8 +130,6 @@ public class AuthController {
         response.setEmail(cliente.getEmail());
         response.setTelefono(cliente.getTelefono());
         response.setDireccion(cliente.getDireccion());
-        response.setTipoVia(cliente.getTipoVia());
-        response.setNumero(cliente.getNumero());
         response.setDistrito(cliente.getDistrito());
         response.setCiudad(cliente.getCiudad());
         response.setCodigoPostal(cliente.getCodigoPostal());
@@ -142,10 +153,6 @@ public class AuthController {
         private String telefono;
         @NotBlank
         private String direccion;
-        @Size(max = 50)
-        private String tipoVia;
-        @Size(max = 20)
-        private String numero;
         @Size(max = 100)
         private String distrito;
         @Size(max = 100)
@@ -176,8 +183,6 @@ public class AuthController {
         private String email;
         private String telefono;
         private String direccion;
-        private String tipoVia;
-        private String numero;
         private String distrito;
         private String ciudad;
         private String codigoPostal;

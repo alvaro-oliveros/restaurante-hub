@@ -88,15 +88,20 @@ public class ClienteService {
 
     // Métodos auxiliares de conversión
     private ClienteDTO convertirADTO(Cliente cliente) {
-        return new ClienteDTO(
-                cliente.getId(),
-                cliente.getNombre(),
-                cliente.getApellido(),
-                cliente.getEmail(),
-                cliente.getTelefono(),
-                cliente.getDocumentoIdentidad(),
-                cliente.getActivo()
-        );
+        ClienteDTO dto = new ClienteDTO();
+        dto.setId(cliente.getId());
+        dto.setNombre(cliente.getNombre());
+        dto.setApellido(cliente.getApellido());
+        dto.setEmail(cliente.getEmail());
+        dto.setTelefono(cliente.getTelefono());
+        dto.setDocumentoIdentidad(cliente.getDocumentoIdentidad());
+        dto.setActivo(cliente.getActivo());
+        dto.setDireccion(cliente.getDireccion());
+        dto.setDistrito(cliente.getDistrito());
+        dto.setCiudad(cliente.getCiudad());
+        dto.setCodigoPostal(cliente.getCodigoPostal());
+        dto.setReferencia(cliente.getReferencia());
+        return dto;
     }
 
     private Cliente convertirAEntidad(ClienteDTO dto) {
@@ -107,6 +112,11 @@ public class ClienteService {
         cliente.setEmail(dto.getEmail());
         cliente.setTelefono(dto.getTelefono());
         cliente.setDocumentoIdentidad(dto.getDocumentoIdentidad());
+        cliente.setDireccion(dto.getDireccion());
+        cliente.setDistrito(dto.getDistrito());
+        cliente.setCiudad(dto.getCiudad());
+        cliente.setCodigoPostal(dto.getCodigoPostal());
+        cliente.setReferencia(dto.getReferencia());
         if (dto.getActivo() != null) {
             cliente.setActivo(dto.getActivo());
         }

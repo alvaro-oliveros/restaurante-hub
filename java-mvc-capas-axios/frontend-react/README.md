@@ -1,16 +1,37 @@
-# React + Vite
+# RestauranteHub (Front)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+SPA en React/Vite para la gestión de un restaurante con flujos separados de salón y delivery, panel de administración y perfil de cliente.
 
-Currently, two official plugins are available:
+## Funcionalidades principales
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Delivery y salón separados**: botón directo a delivery desde la landing; selección de mesa solo para consumo en local.
+- **Seguimiento de pedidos**: historial de estados en back y timeline en front para clientes (delivery y salón).
+- **Gestión de menú y pedidos (admin)**: formularios estilo panel, orden de pedidos más recientes en tablas y dashboard.
+- **Perfil de cliente**:
+  - Datos personales editables.
+  - Direcciones con creación automática al registrarse y marcado de principal.
+  - Métodos de pago simulados (Yape/Plin/tarjetas/efectivo) con formulario inline.
+- **Mejoras UX**: headers consistentes, botones de navegación (inicio, delivery, logout), cards y formularios alineados.
 
-## React Compiler
+## Backend asociado
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+El backend Spring Boot está en `../Java-mvc-capas-axios` e incluye:
+- Historial de estados de pedido (`pedido_estado_historial`).
+- Creación automática de dirección principal al registrar clientes o al consultar si está vacía.
+- Endpoints de métodos de pago y pedidos actualizados.
 
-## Expanding the ESLint configuration
+## Scripts
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+npm run dev
+npm run build
+```
+
+Variables (por defecto):
+- API: `http://localhost:8080/api`
+
+## Notas
+
+- Los métodos de pago son simulados para el demo (no hay pasarela real).
+- El seguimiento refresca periódicamente; se puede limpiar el pedido en curso guardado en localStorage.
