@@ -1,6 +1,7 @@
 package com.example.app.pedido;
 
 import com.example.app.cliente.Cliente;
+import com.example.app.cliente.MetodoPago;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -56,9 +57,16 @@ public class Pedido {
     @Column(length = 200)
     private String direccionEntrega;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "medio_pago", nullable = false)
+    private MetodoPago.TipoPago medioPago;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mesa_id")
     private com.example.app.mesa.Mesa mesa; // Relación con Mesa para pedidos presenciales
+
+    @Column(name = "tomado_por_usuario_id")
+    private Long tomadoPorUsuarioId; // Opcional: mozo que tomó el pedido
 
     @PrePersist
     protected void onCreate() {
@@ -73,7 +81,10 @@ public class Pedido {
         CONFIRMADO,
         EN_PREPARACION,
         LISTO,
+        RECOGIDO,
         ENTREGADO,
+        SERVIDO,
+        PAGADO,
         CANCELADO
     }
 

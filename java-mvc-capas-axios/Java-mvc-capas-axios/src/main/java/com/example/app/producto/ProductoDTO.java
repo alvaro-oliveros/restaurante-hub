@@ -29,6 +29,9 @@ public class ProductoDTO {
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor que 0")
     private BigDecimal precio;
 
+    @DecimalMin(value = "0.0", inclusive = false, message = "El precio de delivery debe ser mayor que 0")
+    private BigDecimal precioDelivery;
+
     private String imagenUrl;
 
     private Double rating;
@@ -44,6 +47,8 @@ public class ProductoDTO {
     private Boolean esVegetariano;
 
     private Boolean disponible;
+
+    private Boolean disponibleDelivery;
 
     private Long categoriaId;
 

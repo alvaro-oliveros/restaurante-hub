@@ -23,6 +23,20 @@ public class ProductoService {
                 .collect(Collectors.toList());
     }
 
+    public List<ProductoDTO> obtenerDisponiblesDelivery() {
+        return productoRepository.findByDisponibleDeliveryTrue()
+                .stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductoDTO> obtenerDisponiblesLocal() {
+        return productoRepository.findByDisponibleTrue()
+                .stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+    }
+
     // Obtener producto por ID
     public ProductoDTO obtenerPorId(Long id) {
         Producto producto = productoRepository.findById(id)
@@ -46,6 +60,7 @@ public class ProductoService {
         producto.setDescripcion(productoDTO.getDescripcion());
         producto.setCantidad(productoDTO.getCantidad());
         producto.setPrecio(productoDTO.getPrecio());
+        producto.setPrecioDelivery(productoDTO.getPrecioDelivery());
         producto.setImagenUrl(productoDTO.getImagenUrl());
         producto.setRating(productoDTO.getRating());
         producto.setTiempoPreparacion(productoDTO.getTiempoPreparacion());
@@ -54,6 +69,7 @@ public class ProductoService {
         producto.setEsPopular(productoDTO.getEsPopular());
         producto.setEsVegetariano(productoDTO.getEsVegetariano());
         producto.setDisponible(productoDTO.getDisponible());
+        producto.setDisponibleDelivery(productoDTO.getDisponibleDelivery());
 
         Producto productoActualizado = productoRepository.save(producto);
         return convertirADTO(productoActualizado);
@@ -83,6 +99,7 @@ public class ProductoService {
         dto.setDescripcion(producto.getDescripcion());
         dto.setCantidad(producto.getCantidad());
         dto.setPrecio(producto.getPrecio());
+        dto.setPrecioDelivery(producto.getPrecioDelivery());
         dto.setImagenUrl(producto.getImagenUrl());
         dto.setRating(producto.getRating());
         dto.setTiempoPreparacion(producto.getTiempoPreparacion());
@@ -91,6 +108,7 @@ public class ProductoService {
         dto.setEsPopular(producto.getEsPopular());
         dto.setEsVegetariano(producto.getEsVegetariano());
         dto.setDisponible(producto.getDisponible());
+        dto.setDisponibleDelivery(producto.getDisponibleDelivery());
 
         if (producto.getCategoria() != null) {
             dto.setCategoriaId(producto.getCategoria().getId());
@@ -107,6 +125,7 @@ public class ProductoService {
         producto.setDescripcion(dto.getDescripcion());
         producto.setCantidad(dto.getCantidad());
         producto.setPrecio(dto.getPrecio());
+        producto.setPrecioDelivery(dto.getPrecioDelivery());
         producto.setImagenUrl(dto.getImagenUrl());
         producto.setRating(dto.getRating());
         producto.setTiempoPreparacion(dto.getTiempoPreparacion());
@@ -115,6 +134,7 @@ public class ProductoService {
         producto.setEsPopular(dto.getEsPopular());
         producto.setEsVegetariano(dto.getEsVegetariano());
         producto.setDisponible(dto.getDisponible());
+        producto.setDisponibleDelivery(dto.getDisponibleDelivery());
 
         if (dto.getCategoriaId() != null) {
             CategoriaProducto categoria = new CategoriaProducto();

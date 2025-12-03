@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -34,6 +35,9 @@ public class Mesa {
 
     @Column(length = 100)
     private String codigoQR; // Para el escaneo QR
+
+    @Column(name = "ultima_actualizacion")
+    private LocalDateTime ultimaActualizacion;
 
     @OneToMany(mappedBy = "mesa", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Pedido> pedidos;

@@ -42,6 +42,85 @@
   font-size: 1.1rem;
 }
 
+.toggle-modo {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 1rem 0 2rem;
+}
+
+.toggle-modo .tab {
+  padding: 0.75rem 1.4rem;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  cursor: pointer;
+  font-weight: 600;
+  color: #374151;
+  transition: all 0.2s;
+}
+
+.toggle-modo .tab.active {
+  background: linear-gradient(135deg, #ff6b35, #ff8c42);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+}
+
+.delivery-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+.delivery-card h3 {
+  margin: 0 0 6px;
+  color: #111827;
+}
+
+.delivery-card p {
+  margin: 0 0 10px;
+  color: #4b5563;
+}
+
+.delivery-card ul {
+  margin: 0;
+  padding-left: 16px;
+  color: #6b7280;
+}
+
+.delivery-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.btn-secondary {
+  background: #f3f4f6;
+  color: #111827;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
 .filtros-container {
   display: flex;
   gap: 1.5rem;
@@ -257,5 +336,9 @@
 
   .mesas-grid {
     grid-template-columns: 1fr;
+  }
+
+  .delivery-card {
+    flex-direction: column;
   }
 }

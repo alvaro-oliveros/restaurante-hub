@@ -12,4 +12,10 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
     List<Producto> findByNombreContainingIgnoreCase(String nombre);
 
     List<Producto> findByCantidadGreaterThan(Integer cantidad);
+
+    List<Producto> findByDisponibleTrue();
+
+    List<Producto> findByDisponibleDeliveryTrue();
+
+    List<Producto> findTop5ByOrderByCantidadAsc();
 }

@@ -4,6 +4,7 @@ import GestionMenu from './GestionMenu';
 import GestionPedidos from './GestionPedidos';
 import GestionUsuarios from './GestionUsuarios';
 import Reportes from './Reportes';
+import GestionMesas from './GestionMesas';
 import './PerfilAdmin.css';
 
 function PerfilAdmin() {
@@ -29,6 +30,7 @@ function PerfilAdmin() {
       <div className="tabs">
         <NavLink to="/admin" end className={({ isActive }) => isActive ? "tab active" : "tab"}>Dashboard</NavLink>
         <NavLink to="/admin/menu" className={({ isActive }) => isActive ? "tab active" : "tab"}>Gestión de Menú</NavLink>
+        <NavLink to="/admin/mesas" className={({ isActive }) => isActive ? "tab active" : "tab"}>Gestión de Mesas</NavLink>
         <NavLink to="/admin/pedidos" className={({ isActive }) => isActive ? "tab active" : "tab"}>Gestión de Pedidos</NavLink>
         <NavLink to="/admin/usuarios" className={({ isActive }) => isActive ? "tab active" : "tab"}>Gestión de Usuarios</NavLink>
         <NavLink to="/admin/reportes" className={({ isActive }) => isActive ? "tab active" : "tab"}>Reportes</NavLink>
@@ -38,6 +40,7 @@ function PerfilAdmin() {
         <Routes>
           <Route path="/" element={<DashboardAdmin />} />
           <Route path="/menu" element={<GestionMenu />} />
+          <Route path="/mesas" element={<GestionMesas />} />
           <Route path="/pedidos" element={<GestionPedidos />} />
           <Route path="/usuarios" element={<GestionUsuarios />} />
           <Route path="/reportes" element={<Reportes />} />

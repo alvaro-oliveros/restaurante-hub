@@ -2,6 +2,7 @@ package com.example.app.cliente;
 
 import com.example.app.pedido.Pedido;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,8 +30,33 @@ public class Cliente {
     @Column(nullable = false, unique = true, length = 150)
     private String email;
 
-    @Column(length = 20)
+    @JsonIgnore
+    @Column(nullable = false, length = 200)
+    private String password;
+
+    @Column(nullable = false, length = 20)
     private String telefono;
+
+    @Column(nullable = false, length = 200)
+    private String direccion;
+
+    @Column(length = 50)
+    private String tipoVia;
+
+    @Column(length = 20)
+    private String numero;
+
+    @Column(length = 100)
+    private String distrito;
+
+    @Column(length = 100)
+    private String ciudad;
+
+    @Column(name = "codigo_postal", length = 20)
+    private String codigoPostal;
+
+    @Column(length = 500)
+    private String referencia;
 
     @Column(length = 20)
     private String documentoIdentidad;

@@ -11,7 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/clientes/{clienteId}/direcciones")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class DireccionController {
 
     private final DireccionService direccionService;

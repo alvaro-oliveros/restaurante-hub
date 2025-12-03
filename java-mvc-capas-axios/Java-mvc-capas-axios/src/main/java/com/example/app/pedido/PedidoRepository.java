@@ -15,4 +15,6 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
     @Query("SELECT p FROM Pedido p WHERE p.estado IN :estados ORDER BY p.fechaPedido DESC")
     List<Pedido> findByEstadoIn(List<Pedido.EstadoPedido> estados);
+
+    boolean existsByMesa_IdAndEstadoIn(Long mesaId, List<Pedido.EstadoPedido> estados);
 }

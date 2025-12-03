@@ -1,31 +1,42 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import mesaService from '../../services/mesaService';
 import pedidoService from '../../services/pedidoService';
 import productoService from '../../services/productoService';
+import reporteService from '../../services/reporteService';
 import './DashboardAdmin.css';
 
 function DashboardAdmin() {
+  const navigate = useNavigate();
   const [resumenMesas, setResumenMesas] = useState(null);
   const [pedidos, setPedidos] = useState([]);
   const [productos, setProductos] = useState([]);
+  const [ventasHora, setVentasHora] = useState(null);
+  const [pagosMetodo, setPagosMetodo] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     cargarDatos();
+    const interval = setInterval(() => cargarDatos(), 15000); // refresco ligero
+    return () => clearInterval(interval);
   }, []);
 
   const cargarDatos = async () => {
     try {
       setLoading(true);
-      const [mesasData, pedidosData, productosData] = await Promise.all([
+      const [mesasData, pedidosData, productosData, ventasPorHora, pagosPorMetodo] = await Promise.all([
         mesaService.obtenerResumenEstados(),
         pedidoService.obtenerTodos(),
-        productoService.obtenerTodos()
+        productoService.obtenerTodos(),
+        reporteService.obtenerVentasPorHora(),
+        reporteService.obtenerPagosPorMetodo()
       ]);
 
       setResumenMesas(mesasData);
       setPedidos(pedidosData);
       setProductos(productosData);
+      setVentasHora(ventasPorHora);
+      setPagosMetodo(pagosPorMetodo);
     } catch (error) {
       console.error('Error al cargar datos:', error);
       alert('Error al cargar el dashboard');
@@ -46,17 +57,55 @@ function DashboardAdmin() {
     return pedidos.filter(p => p.fechaPedido?.startsWith(hoy)).length;
   };
 
-  const obtenerPedidosPendientes = () => {
-    return pedidos.filter(p =>
-      p.estado === 'PENDIENTE' ||
-      p.estado === 'CONFIRMADO' ||
-      p.estado === 'EN_PREPARACION'
+  const obtenerHoraPico = () => {
+    if (!ventasHora?.horas?.length) return '--';
+    const maxHora = ventasHora.horas.reduce((prev, curr) =>
+      Number(curr.total || 0) > Number(prev.total || 0) ? curr : prev
     );
+    return `${maxHora.hora}:00`;
+  };
+
+  const obtenerMetodoPrincipal = () => {
+    if (!pagosMetodo?.metodos?.length) return '--';
+    const mayor = pagosMetodo.metodos.reduce((prev, curr) =>
+      Number(curr.total || 0) > Number(prev.total || 0) ? curr : prev
+    );
+    return mayor.medioPago;
+  };
+
+  const formatearMedioPago = (medio) => {
+    if (!medio) return '--';
+    switch (medio) {
+      case 'TARJETA_CREDITO': return 'Tarjeta Crédito';
+      case 'TARJETA_DEBITO': return 'Tarjeta Débito';
+      case 'YAPE': return 'Yape';
+      case 'PLIN': return 'Plin';
+      case 'EFECTIVO': return 'Efectivo';
+      default: return medio.replace(/_/g, ' ');
+    }
+  };
+
+  const obtenerPedidosPendientes = () => {
+    return pedidos
+      .filter(p =>
+        p.estado === 'PENDIENTE' ||
+        p.estado === 'CONFIRMADO' ||
+        p.estado === 'EN_PREPARACION' ||
+        p.estado === 'LISTO' ||
+        p.estado === 'RECOGIDO' ||
+        p.estado === 'SERVIDO'
+      )
+      .sort((a, b) => {
+        const fa = a.fechaPedido ? new Date(a.fechaPedido).getTime() : 0;
+        const fb = b.fechaPedido ? new Date(b.fechaPedido).getTime() : 0;
+        if (fb !== fa) return fb - fa;
+        return (b.id || 0) - (a.id || 0);
+      });
   };
 
   const obtenerProductosPopulares = () => {
     return productos
-      .filter(p => p.esPopular)
+      .filter(p => (p.vecesVendido || 0) > 0)
       .sort((a, b) => (b.vecesVendido || 0) - (a.vecesVendido || 0))
       .slice(0, 5);
   };
@@ -68,6 +117,7 @@ function DashboardAdmin() {
       case 'EN_PREPARACION': return '#f97316';
       case 'LISTO': return '#10b981';
       case 'ENTREGADO': return '#6b7280';
+      case 'SERVIDO': return '#6b7280';
       case 'CANCELADO': return '#ef4444';
       default: return '#9ca3af';
     }
@@ -80,6 +130,7 @@ function DashboardAdmin() {
       case 'EN_PREPARACION': return 'En Preparación';
       case 'LISTO': return 'Listo';
       case 'ENTREGADO': return 'Entregado';
+      case 'SERVIDO': return 'Servido';
       case 'CANCELADO': return 'Cancelado';
       default: return estado;
     }
@@ -106,7 +157,7 @@ function DashboardAdmin() {
           <div className="kpi-icon">💰</div>
           <div className="kpi-content">
             <div className="kpi-label">Ingresos Hoy</div>
-            <div className="kpi-value">S/ {calcularIngresosDia().toFixed(2)}</div>
+            <div className="kpi-value kpi-value--compact">S/. {calcularIngresosDia().toFixed(2)}</div>
           </div>
         </div>
 
@@ -123,7 +174,7 @@ function DashboardAdmin() {
           <div className="kpi-content">
             <div className="kpi-label">Mesas Ocupadas</div>
             <div className="kpi-value">
-              {resumenMesas?.ocupadas || 0} / {resumenMesas?.total || 0}
+              {resumenMesas?.ocupadas || 0} / {resumenMesas?.totalMesas || 0}
             </div>
           </div>
         </div>
@@ -133,6 +184,22 @@ function DashboardAdmin() {
           <div className="kpi-content">
             <div className="kpi-label">Pedidos Activos</div>
             <div className="kpi-value">{obtenerPedidosPendientes().length}</div>
+          </div>
+        </div>
+
+        <div className="kpi-card horas">
+          <div className="kpi-icon">🕒</div>
+          <div className="kpi-content">
+            <div className="kpi-label">Hora Pico</div>
+            <div className="kpi-value">{obtenerHoraPico()}</div>
+          </div>
+        </div>
+
+        <div className="kpi-card pagos">
+          <div className="kpi-icon">💳</div>
+          <div className="kpi-content">
+            <div className="kpi-label">Método Principal</div>
+            <div className="kpi-value kpi-value--wrap kpi-value--multiline">{formatearMedioPago(obtenerMetodoPrincipal())}</div>
           </div>
         </div>
       </div>
@@ -162,16 +229,16 @@ function DashboardAdmin() {
 
           <div className="ocupacion-bar">
             <div className="bar-label">
-              Ocupación: {resumenMesas.total > 0
-                ? ((resumenMesas.ocupadas / resumenMesas.total) * 100).toFixed(0)
+              Ocupación: {resumenMesas.totalMesas > 0
+                ? ((resumenMesas.ocupadas / resumenMesas.totalMesas) * 100).toFixed(0)
                 : 0}%
             </div>
             <div className="bar">
               <div
                 className="bar-fill"
                 style={{
-                  width: `${resumenMesas.total > 0
-                    ? (resumenMesas.ocupadas / resumenMesas.total) * 100
+                  width: `${resumenMesas.totalMesas > 0
+                    ? (resumenMesas.ocupadas / resumenMesas.totalMesas) * 100
                     : 0}%`
                 }}
               ></div>
@@ -186,23 +253,34 @@ function DashboardAdmin() {
           <h2>Pedidos Activos</h2>
           <div className="pedidos-lista">
             {obtenerPedidosPendientes().length > 0 ? (
-              obtenerPedidosPendientes().slice(0, 5).map((pedido) => (
-                <div key={pedido.id} className="pedido-item">
-                  <div className="pedido-info">
-                    <div className="pedido-id">Pedido #{pedido.id}</div>
-                    <div className="pedido-mesa">
-                      {pedido.numeroMesa ? `Mesa ${pedido.numeroMesa}` : 'Delivery'}
+              <>
+                {obtenerPedidosPendientes().slice(0, 10).map((pedido) => (
+                  <div
+                    key={pedido.id}
+                    className="pedido-item pedido-item--clickable"
+                    onClick={() => navigate(`/admin/pedidos?pedidoId=${pedido.id}`)}
+                  >
+                    <div className="pedido-info">
+                      <div className="pedido-id">Pedido #{pedido.id}</div>
+                      <div className="pedido-mesa">
+                        {pedido.numeroMesa ? `Mesa ${pedido.numeroMesa}` : 'Delivery'}
+                      </div>
+                    </div>
+                    <div className="pedido-monto">S/ {pedido.total?.toFixed(2) || '0.00'}</div>
+                    <div
+                      className="pedido-estado-badge"
+                      style={{ backgroundColor: getEstadoPedidoColor(pedido.estado) }}
+                    >
+                      {getEstadoPedidoTexto(pedido.estado)}
                     </div>
                   </div>
-                  <div className="pedido-monto">S/ {pedido.total?.toFixed(2) || '0.00'}</div>
-                  <div
-                    className="pedido-estado-badge"
-                    style={{ backgroundColor: getEstadoPedidoColor(pedido.estado) }}
-                  >
-                    {getEstadoPedidoTexto(pedido.estado)}
-                  </div>
-                </div>
-              ))
+                ))}
+                {obtenerPedidosPendientes().length > 10 && (
+                  <button className="btn-ver-mas" onClick={() => navigate('/admin/pedidos')}>
+                    Ver todos los pedidos activos
+                  </button>
+                )}
+              </>
             ) : (
               <div className="lista-vacia">No hay pedidos activos</div>
             )}

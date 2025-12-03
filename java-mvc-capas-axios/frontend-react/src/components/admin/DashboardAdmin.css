@@ -92,6 +92,22 @@
   background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
 }
 
+.kpi-card.horas {
+  border-color: #8b5cf6;
+}
+
+.kpi-card.horas .kpi-icon {
+  background: linear-gradient(135deg, #ede9fe 0%, #c4b5fd 100%);
+}
+
+.kpi-card.pagos {
+  border-color: #14b8a6;
+}
+
+.kpi-card.pagos .kpi-icon {
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+}
+
 .kpi-content {
   flex: 1;
 }
@@ -106,6 +122,21 @@
   color: #1f2937;
   font-size: 2rem;
   font-weight: 700;
+}
+
+.kpi-value--compact {
+  font-size: 1.65rem;
+}
+
+.kpi-value--wrap {
+  font-size: 1.4rem;
+  line-height: 1.2;
+  max-width: 170px;
+}
+
+.kpi-value--multiline {
+  white-space: normal;
+  word-break: break-word;
 }
 
 .seccion-card {
@@ -218,11 +249,38 @@
   background: #f9fafb;
   border-radius: 10px;
   transition: all 0.2s;
+  border: 1px solid transparent;
 }
 
 .pedido-item:hover {
   background: #f3f4f6;
   transform: translateX(5px);
+}
+
+.pedido-item--clickable {
+  cursor: pointer;
+}
+
+.pedido-item--clickable:hover {
+  border-color: #dbeafe;
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.12);
+}
+
+.btn-ver-mas {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+  background: linear-gradient(135deg, #1f3a5f 0%, #1b4b91 100%);
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(27, 75, 145, 0.35);
+}
+
+.btn-ver-mas:hover {
+  opacity: 0.95;
 }
 
 .pedido-info {

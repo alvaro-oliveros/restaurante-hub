@@ -11,7 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/clientes/{clienteId}/metodos-pago")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class MetodoPagoController {
 
     private final MetodoPagoService metodoPagoService;

@@ -11,7 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/productos")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class ProductoController {
 
     private final ProductoService productoService;
@@ -20,6 +19,18 @@ public class ProductoController {
     @GetMapping
     public ResponseEntity<List<ProductoDTO>> obtenerTodos() {
         List<ProductoDTO> productos = productoService.obtenerTodos();
+        return ResponseEntity.ok(productos);
+    }
+
+    @GetMapping("/delivery")
+    public ResponseEntity<List<ProductoDTO>> obtenerDelivery() {
+        List<ProductoDTO> productos = productoService.obtenerDisponiblesDelivery();
+        return ResponseEntity.ok(productos);
+    }
+
+    @GetMapping("/local")
+    public ResponseEntity<List<ProductoDTO>> obtenerLocal() {
+        List<ProductoDTO> productos = productoService.obtenerDisponiblesLocal();
         return ResponseEntity.ok(productos);
     }
 

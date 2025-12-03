@@ -30,6 +30,9 @@ public class Producto {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
+    @Column(precision = 10, scale = 2)
+    private BigDecimal precioDelivery;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoria_id")
     private CategoriaProducto categoria;
@@ -57,4 +60,7 @@ public class Producto {
 
     @Column
     private Boolean esVegetariano = false;
+
+    @Column(nullable = false)
+    private Boolean disponibleDelivery = true;
 }

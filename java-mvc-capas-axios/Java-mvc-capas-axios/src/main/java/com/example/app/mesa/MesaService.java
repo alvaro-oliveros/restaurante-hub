@@ -1,10 +1,14 @@
 package com.example.app.mesa;
 
 import com.example.app.common.exception.ResourceNotFoundException;
+import com.example.app.pedido.Pedido;
+import com.example.app.pedido.PedidoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,11 +18,16 @@ import java.util.stream.Collectors;
 public class MesaService {
 
     private final MesaRepository mesaRepository;
+    private final PedidoRepository pedidoRepository;
 
     // Obtener todas las mesas
     public List<MesaDTO> obtenerTodas() {
         return mesaRepository.findAll()
                 .stream()
+                .sorted(Comparator.comparing(
+                        Mesa::getUltimaActualizacion,
+                        Comparator.nullsLast(Comparator.reverseOrder())
+                ))
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }
@@ -54,8 +63,8 @@ public class MesaService {
         }
 
         Mesa mesa = convertirAEntidad(mesaDTO);
-        // Generar código QR (simplificado por ahora)
         mesa.setCodigoQR("QR-MESA-" + mesa.getNumeroMesa());
+        mesa.setUltimaActualizacion(LocalDateTime.now());
 
         Mesa mesaGuardada = mesaRepository.save(mesa);
         return convertirADTO(mesaGuardada);
@@ -76,6 +85,7 @@ public class MesaService {
         mesa.setCapacidad(mesaDTO.getCapacidad());
         mesa.setUbicacion(mesaDTO.getUbicacion());
         mesa.setEstado(mesaDTO.getEstado());
+        mesa.setUltimaActualizacion(LocalDateTime.now());
 
         Mesa mesaActualizada = mesaRepository.save(mesa);
         return convertirADTO(mesaActualizada);
@@ -87,6 +97,7 @@ public class MesaService {
                 .orElseThrow(() -> new ResourceNotFoundException("Mesa no encontrada con id: " + id));
 
         mesa.setEstado(nuevoEstado);
+        mesa.setUltimaActualizacion(LocalDateTime.now());
         Mesa mesaActualizada = mesaRepository.save(mesa);
         return convertirADTO(mesaActualizada);
     }
@@ -119,13 +130,26 @@ public class MesaService {
 
     // Métodos auxiliares de conversión
     private MesaDTO convertirADTO(Mesa mesa) {
+        boolean tienePedidoActivo = pedidoRepository.existsByMesa_IdAndEstadoIn(
+                mesa.getId(),
+                List.of(
+                        Pedido.EstadoPedido.PENDIENTE,
+                        Pedido.EstadoPedido.CONFIRMADO,
+                        Pedido.EstadoPedido.EN_PREPARACION,
+                        Pedido.EstadoPedido.LISTO,
+                        Pedido.EstadoPedido.ENTREGADO
+                )
+        );
+
         return new MesaDTO(
                 mesa.getId(),
                 mesa.getNumeroMesa(),
                 mesa.getCapacidad(),
                 mesa.getUbicacion(),
                 mesa.getEstado(),
-                mesa.getCodigoQR()
+                mesa.getCodigoQR(),
+                tienePedidoActivo,
+                mesa.getUltimaActualizacion()
         );
     }
 
@@ -137,6 +161,7 @@ public class MesaService {
         mesa.setUbicacion(dto.getUbicacion());
         mesa.setEstado(dto.getEstado());
         mesa.setCodigoQR(dto.getCodigoQR());
+        mesa.setUltimaActualizacion(dto.getUltimaActualizacion());
         return mesa;
     }
 }

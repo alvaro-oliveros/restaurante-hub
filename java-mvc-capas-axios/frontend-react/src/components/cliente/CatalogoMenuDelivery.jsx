@@ -1,23 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import productoService from '../../services/productoService';
 import pedidoService from '../../services/pedidoService';
-import mesaService from '../../services/mesaService';
+import { fetchClienteActual } from '../../services/authService';
 import './CatalogoMenu.css';
 
-const METODOS_PAGO_LOCAL = [
-  { value: 'EFECTIVO', label: 'Efectivo en mesa' },
-  { value: 'TARJETA_DEBITO', label: 'Tarjeta débito' },
-  { value: 'TARJETA_CREDITO', label: 'Tarjeta crédito' },
-  { value: 'YAPE', label: 'Yape' },
-  { value: 'PLIN', label: 'Plin' },
-];
+const DELIVERY_FEE = 5.0;
 
-function CatalogoMenu() {
-  const { mesaId } = useParams();
+function CatalogoMenuDelivery() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const tokenMesa = searchParams.get('token');
   const [productos, setProductos] = useState([]);
   const [productosFiltrados, setProductosFiltrados] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,18 +19,16 @@ function CatalogoMenu() {
   const [filtroPopular, setFiltroPopular] = useState(false);
   const [busqueda, setBusqueda] = useState('');
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
-  const [medioPago, setMedioPago] = useState('EFECTIVO');
-  const [pagoEnMesa, setPagoEnMesa] = useState(true);
-
-  // Hasta que haya autenticación real, usamos un cliente fijo
-  const clienteId = 1;
+  const [medioPago, setMedioPago] = useState('YAPE');
+  const [cliente, setCliente] = useState(null);
 
   useEffect(() => {
-    if (!tokenMesa) {
-      alert('QR inválido o faltan datos de la mesa. Por favor, vuelve a escanear.');
-      navigate('/cliente/mesas');
-    }
-  }, [tokenMesa, navigate]);
+    fetchClienteActual()
+      .then(setCliente)
+      .catch(() => {
+        navigate('/cliente/login?redirect=/cliente/menu/delivery', { replace: true });
+      });
+  }, [navigate]);
 
   useEffect(() => {
     cargarProductos();
@@ -49,14 +38,26 @@ function CatalogoMenu() {
     aplicarFiltros();
   }, [productos, filtroCategoria, filtroVegetariano, filtroPopular, busqueda]);
 
+  const METODOS_PAGO_DELIVERY = [
+    { value: 'YAPE', label: 'Yape' },
+    { value: 'PLIN', label: 'Plin' },
+    { value: 'TARJETA_DEBITO', label: 'Tarjeta débito' },
+    { value: 'TARJETA_CREDITO', label: 'Tarjeta crédito' },
+  ];
+
+  const medioPagoLabel = (valor) => {
+    const found = METODOS_PAGO_DELIVERY.find((m) => m.value === valor);
+    return found?.label || valor;
+  };
+
   const cargarProductos = async () => {
     try {
       setLoading(true);
-      const data = await productoService.obtenerTodos();
-      setProductos(data.filter(p => p.disponible));
+      const data = await productoService.obtenerDelivery();
+      setProductos(data.filter(p => p.disponibleDelivery));
     } catch (error) {
-      console.error('Error al cargar productos:', error);
-      alert('Error al cargar el menú');
+      console.error('Error al cargar productos delivery:', error);
+      alert('Error al cargar el menú delivery');
     } finally {
       setLoading(false);
     }
@@ -87,7 +88,10 @@ function CatalogoMenu() {
     setProductosFiltrados(filtered);
   };
 
+  const obtenerPrecio = (producto) => producto.precioDelivery ?? producto.precio;
+
   const agregarAlCarrito = (producto) => {
+    const precioActual = obtenerPrecio(producto);
     const itemExistente = carrito.find(item => item.id === producto.id);
     if (itemExistente) {
       setCarrito(carrito.map(item =>
@@ -96,12 +100,13 @@ function CatalogoMenu() {
           : item
       ));
     } else {
-      setCarrito([...carrito, { ...producto, cantidad: 1 }]);
+      setCarrito([...carrito, { ...producto, cantidad: 1, precio: precioActual }]);
     }
   };
 
   const removerDelCarrito = (productoId) => {
     const itemExistente = carrito.find(item => item.id === productoId);
+    if (!itemExistente) return;
     if (itemExistente.cantidad > 1) {
       setCarrito(carrito.map(item =>
         item.id === productoId
@@ -113,7 +118,6 @@ function CatalogoMenu() {
     }
   };
 
-  // Precios de los productos ya incluyen IGV (18%)
   const calcularTotalBruto = () =>
     carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
 
@@ -127,9 +131,22 @@ function CatalogoMenu() {
     return total - (total / 1.18);
   };
 
-  const medioPagoLabel = (valor) => {
-    const encontrado = METODOS_PAGO_LOCAL.find((m) => m.value === valor);
-    return encontrado?.label || valor;
+  const calcularTotalConDelivery = () => calcularTotalBruto() + DELIVERY_FEE;
+
+  const armarDireccionEntrega = () => {
+    if (!cliente) {
+      return '';
+    }
+    const partes = [
+      cliente.tipoVia,
+      cliente.direccion,
+      cliente.numero ? `#${cliente.numero}` : null,
+      cliente.distrito,
+      cliente.ciudad,
+      cliente.codigoPostal,
+      cliente.referencia,
+    ].filter(Boolean);
+    return partes.join(', ') || cliente.direccion || '';
   };
 
   const handleConfirmarPedido = () => {
@@ -141,7 +158,7 @@ function CatalogoMenu() {
   };
 
   const enviarPedido = async () => {
-    if (!carrito.length) return;
+    if (!carrito.length || !cliente) return;
 
     try {
       setConfirmando(true);
@@ -149,17 +166,16 @@ function CatalogoMenu() {
       const total = calcularTotalBruto();
       const subtotal = calcularNeto();
       const igv = calcularIGV();
+      const totalConDelivery = calcularTotalConDelivery();
 
       const payload = {
-        clienteId,
-        tipo: 'PRESENCIAL',
-        mesaId: Number(mesaId),
-        tokenMesa,
-        medioPago: pagoEnMesa ? 'EFECTIVO' : medioPago,
-        observaciones: pagoEnMesa ? 'Pago en mesa - pendiente' : `Pago registrado (${medioPagoLabel(medioPago)})`,
-        subtotal: Number(subtotal.toFixed(2)), // neto sin IGV
+        clienteId: cliente.id,
+        tipo: 'DELIVERY',
+        subtotal: Number(subtotal.toFixed(2)),
         igv: Number(igv.toFixed(2)),
-        total: Number(total.toFixed(2)), // precio final (incluye IGV)
+        total: Number(totalConDelivery.toFixed(2)),
+        direccionEntrega: armarDireccionEntrega(),
+        medioPago,
         detalles: carrito.map((item) => ({
           productoId: item.id,
           cantidad: item.cantidad,
@@ -168,21 +184,10 @@ function CatalogoMenu() {
       };
 
       const pedidoCreado = await pedidoService.crear(payload);
-
-      // Intentar marcar la mesa como ocupada para reflejar el nuevo pedido
-      try {
-        await mesaService.actualizarEstado(Number(mesaId), 'OCUPADA');
-      } catch (error) {
-        console.warn('No se pudo actualizar el estado de la mesa:', error);
-      }
-
       setCarrito([]);
-      setPagoEnMesa(true);
-      setMedioPago('EFECTIVO');
-      alert(`Pedido confirmado. Número de pedido: ${pedidoCreado.id}`);
-      navigate('/cliente/mesas');
+      alert(`Pedido confirmado y pago con ${medioPagoLabel(medioPago)}.\nNúmero de pedido: ${pedidoCreado.id}`);
     } catch (error) {
-      console.error('Error al confirmar pedido:', error);
+      console.error('Error al confirmar pedido delivery:', error);
       const serverMessage = error.response?.data?.message;
       alert(serverMessage || 'No se pudo confirmar el pedido. Intenta nuevamente.');
     } finally {
@@ -208,7 +213,7 @@ function CatalogoMenu() {
   if (loading) {
     return (
       <div className="catalogo-container">
-        <div className="loading">Cargando menú...</div>
+        <div className="loading">Cargando menú delivery...</div>
       </div>
     );
   }
@@ -216,12 +221,12 @@ function CatalogoMenu() {
   return (
     <div className="catalogo-container">
       <div className="catalogo-header">
-        <button className="btn-back" onClick={() => navigate('/cliente/mesas')}>
-          ← Cambiar Mesa
+        <button className="btn-back" onClick={() => navigate('/cliente/mesas?modo=delivery')}>
+          ← Volver
         </button>
         <div className="header-info">
-          <h1>Nuestro Menú</h1>
-          <p>Mesa #{mesaId}</p>
+          <h1>Menú Delivery</h1>
+          {cliente && <p>Pedido para: {cliente.nombre} {cliente.apellido}</p>}
         </div>
       </div>
 
@@ -264,62 +269,65 @@ function CatalogoMenu() {
       </div>
 
       <div className="menu-grid">
-        {productosFiltrados.map((producto) => (
-          <div key={producto.id} className="producto-card">
-            {producto.esPopular && (
-              <div className="badge-popular">Popular</div>
-            )}
-
-            <div className="producto-imagen">
-              {producto.imagenUrl ? (
-                <img src={producto.imagenUrl} alt={producto.nombre} />
-              ) : (
-                <div className="placeholder-imagen">🍽️</div>
+        {productosFiltrados.map((producto) => {
+          const precioActual = obtenerPrecio(producto);
+          return (
+            <div key={producto.id} className="producto-card">
+              {producto.esPopular && (
+                <div className="badge-popular">Popular</div>
               )}
-            </div>
 
-            <div className="producto-info">
-              <div className="producto-header-card">
-                <h3>{producto.nombre}</h3>
-                {producto.esVegetariano && <span className="badge-veg">🌱</span>}
-              </div>
-
-              <p className="producto-descripcion">{producto.descripcion}</p>
-
-              <div className="producto-detalles">
-                {producto.rating && (
-                  <div className="rating">
-                    {renderEstrellas(producto.rating)}
-                    <span className="rating-numero">({producto.rating})</span>
-                  </div>
-                )}
-
-                {producto.tiempoPreparacion && (
-                  <div className="tiempo">
-                    ⏱️ {producto.tiempoPreparacion} min
-                  </div>
+              <div className="producto-imagen">
+                {producto.imagenUrl ? (
+                  <img src={producto.imagenUrl} alt={producto.nombre} />
+                ) : (
+                  <div className="placeholder-imagen">🍽️</div>
                 )}
               </div>
 
-              <div className="card-bottom">
-                {producto.alergenos && (
-                  <div className="alergenos">
-                    ⚠️ Contiene: {producto.alergenos}
+              <div className="producto-info">
+                <div className="producto-header-card">
+                  <h3>{producto.nombre}</h3>
+                  {producto.esVegetariano && <span className="badge-veg">🌱</span>}
+                </div>
+
+                <p className="producto-descripcion">{producto.descripcion}</p>
+
+                <div className="producto-detalles">
+                  {producto.rating && (
+                    <div className="rating">
+                      {renderEstrellas(producto.rating)}
+                      <span className="rating-numero">({producto.rating})</span>
+                    </div>
+                  )}
+
+                  {producto.tiempoPreparacion && (
+                    <div className="tiempo">
+                      ⏱️ {producto.tiempoPreparacion} min
+                    </div>
+                  )}
+                </div>
+
+                <div className="card-bottom">
+                  {producto.alergenos && (
+                    <div className="alergenos">
+                      ⚠️ Contiene: {producto.alergenos}
+                    </div>
+                  )}
+                  <div className="producto-footer">
+                    <div className="precio">S/ {precioActual.toFixed(2)}</div>
+                    <button
+                      className="btn-agregar"
+                      onClick={() => agregarAlCarrito({ ...producto, precio: precioActual })}
+                    >
+                      Agregar +
+                    </button>
                   </div>
-                )}
-                <div className="producto-footer">
-                  <div className="precio">S/ {producto.precio.toFixed(2)}</div>
-                  <button
-                    className="btn-agregar"
-                    onClick={() => agregarAlCarrito(producto)}
-                  >
-                    Agregar +
-                  </button>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {productosFiltrados.length === 0 && (
@@ -362,9 +370,13 @@ function CatalogoMenu() {
                   <span>IGV (18%):</span>
                   <span>S/ {calcularIGV().toFixed(2)}</span>
                 </div>
+                <div className="total-row">
+                  <span>Delivery:</span>
+                  <span>S/ {DELIVERY_FEE.toFixed(2)}</span>
+                </div>
                 <div className="total-row total-final">
                   <span>Total:</span>
-                  <span>S/ {calcularTotalBruto().toFixed(2)}</span>
+                  <span>S/ {calcularTotalConDelivery().toFixed(2)}</span>
                 </div>
               </div>
               <button
@@ -382,16 +394,16 @@ function CatalogoMenu() {
       {carrito.length > 0 && (
         <div className="checkout-bar">
           <div>
-            <p className="checkout-bar__label">Total estimado</p>
-            <div className="checkout-bar__total">S/ {calcularTotalBruto().toFixed(2)}</div>
-            <p className="checkout-bar__meta">{carrito.length} productos · paga ahora o en mesa</p>
+            <p className="checkout-bar__label">Total con delivery</p>
+            <div className="checkout-bar__total">S/ {calcularTotalConDelivery().toFixed(2)}</div>
+            <p className="checkout-bar__meta">{carrito.length} productos · pago inmediato</p>
           </div>
           <button
             className="btn-confirmar checkout-bar__btn"
             onClick={handleConfirmarPedido}
             disabled={confirmando}
           >
-            {confirmando ? 'Procesando...' : 'Confirmar pedido'}
+            {confirmando ? 'Procesando...' : 'Confirmar y pagar'}
           </button>
         </div>
       )}
@@ -399,8 +411,25 @@ function CatalogoMenu() {
       {mostrarConfirmacion && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>Confirmar pedido</h3>
-            <p>Mesa #{mesaId}</p>
+            <h3>Confirmar pedido delivery</h3>
+            {cliente && (
+              <p>
+                {cliente.nombre} {cliente.apellido} · {armarDireccionEntrega()}
+              </p>
+            )}
+            <div className="modal-pago">
+              <label>Método de pago (se procesa ahora)</label>
+              <select value={medioPago} onChange={(e) => setMedioPago(e.target.value)}>
+                {METODOS_PAGO_DELIVERY.map((opcion) => (
+                  <option key={opcion.value} value={opcion.value}>
+                    {opcion.label}
+                  </option>
+                ))}
+              </select>
+              <p className="helper-text">
+                Para Yape/Plin te mostraremos los datos al confirmar; para tarjeta procesamos el cargo inmediato.
+              </p>
+            </div>
 
             <div className="modal-resumen">
               {carrito.map((item) => (
@@ -418,57 +447,15 @@ function CatalogoMenu() {
                   <span>IGV (incluido)</span>
                   <span>S/ {calcularIGV().toFixed(2)}</span>
                 </div>
+                <div>
+                  <span>Delivery</span>
+                  <span>S/ {DELIVERY_FEE.toFixed(2)}</span>
+                </div>
                 <div className="modal-total-final">
                   <span>Total</span>
-                  <span>S/ {calcularTotalBruto().toFixed(2)}</span>
+                  <span>S/ {calcularTotalConDelivery().toFixed(2)}</span>
                 </div>
               </div>
-            </div>
-
-            <div className="modal-pago">
-              <label>Pago</label>
-              <div className="radio-row">
-                <label className="radio-option">
-                  <input
-                    type="radio"
-                    name="modoPago"
-                    checked={!pagoEnMesa}
-                    onChange={() => setPagoEnMesa(false)}
-                  />
-                  Pagar ahora
-                </label>
-                <label className="radio-option">
-                  <input
-                    type="radio"
-                    name="modoPago"
-                    checked={pagoEnMesa}
-                    onChange={() => setPagoEnMesa(true)}
-                  />
-                  Pagar en mesa
-                </label>
-              </div>
-
-              {!pagoEnMesa && (
-                <>
-                  <label>Medio de pago</label>
-                  <select value={medioPago} onChange={(e) => setMedioPago(e.target.value)}>
-                    {METODOS_PAGO_LOCAL.map((opcion) => (
-                      <option key={opcion.value} value={opcion.value}>
-                        {opcion.label}
-                      </option>
-                    ))}
-                  </select>
-                  <p className="helper-text">
-                    Registraremos el pago con {medioPagoLabel(medioPago)} al confirmar.
-                  </p>
-                </>
-              )}
-
-              {pagoEnMesa && (
-                <p className="helper-text">
-                  El pedido se envía como pendiente de pago. Podrás cancelarlo en efectivo o tarjeta con el mozo.
-                </p>
-              )}
             </div>
 
             <div className="modal-actions">
@@ -476,11 +463,7 @@ function CatalogoMenu() {
                 Volver
               </button>
               <button className="btn-primario" onClick={enviarPedido} disabled={confirmando}>
-                {confirmando
-                  ? 'Enviando...'
-                  : pagoEnMesa
-                    ? 'Confirmar (pago en mesa)'
-                    : 'Confirmar y pagar ahora'}
+                {confirmando ? 'Enviando...' : 'Confirmar y pagar'}
               </button>
             </div>
           </div>
@@ -490,4 +473,4 @@ function CatalogoMenu() {
   );
 }
 
-export default CatalogoMenu;
+export default CatalogoMenuDelivery;

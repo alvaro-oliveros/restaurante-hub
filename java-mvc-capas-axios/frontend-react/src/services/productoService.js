@@ -35,6 +35,18 @@ const productoService = {
     const response = await api.get(`/productos/buscar?nombre=${nombre}`);
     return response.data;
   },
+
+  // Obtener productos disponibles para delivery
+  obtenerDelivery: async () => {
+    const response = await api.get('/productos/delivery');
+    return response.data;
+  },
+
+  // Obtener productos disponibles para salón/local
+  obtenerLocales: async () => {
+    const response = await api.get('/productos/local');
+    return response.data;
+  },
 };
 
 export default productoService;

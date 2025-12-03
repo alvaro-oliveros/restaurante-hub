@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,4 +30,9 @@ public class MesaDTO {
     private Mesa.EstadoMesa estado;
 
     private String codigoQR;
+
+    // Indica si la mesa tiene un pedido activo (pendiente, confirmado, en preparación, listo o entregado)
+    private Boolean tienePedidoActivo;
+
+    private LocalDateTime ultimaActualizacion;
 }

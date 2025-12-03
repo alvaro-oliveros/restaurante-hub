@@ -45,6 +45,7 @@ public class MetodoPago {
         TARJETA_CREDITO,
         TARJETA_DEBITO,
         YAPE,
+        PLIN,
         EFECTIVO
     }
 }

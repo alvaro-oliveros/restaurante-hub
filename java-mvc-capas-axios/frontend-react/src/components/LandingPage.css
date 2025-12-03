@@ -1,147 +1,166 @@
+* {
+  box-sizing: border-box;
+}
+
 .landing-page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 2rem;
-}
-
-.landing-header {
-  text-align: center;
-  margin-bottom: 4rem;
-  color: white;
-}
-
-.landing-header h1 {
-  font-size: 3.5rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.landing-header p {
-  font-size: 1.3rem;
-  opacity: 0.95;
-}
-
-.landing-cards {
-  display: flex;
-  gap: 3rem;
-  margin-bottom: 3rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.landing-card {
-  background: white;
-  border-radius: 20px;
-  padding: 3rem 2.5rem;
-  width: 280px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.15), transparent 35%),
+    linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #312e81 100%);
+  padding: 3rem 2rem 2rem;
   position: relative;
   overflow: hidden;
 }
 
-.landing-card::before {
+.landing-page::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  transition: height 0.3s ease;
+  inset: 0;
+  background: radial-gradient(circle at 70% 20%, rgba(59, 130, 246, 0.2), transparent 50%);
+  pointer-events: none;
 }
 
-.cliente-card::before {
-  background: linear-gradient(90deg, #ff6b35 0%, #ff8c42 100%);
+.landing-admin-button {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.admin-card::before {
-  background: linear-gradient(90deg, #4361ee 0%, #3a86ff 100%);
+.landing-admin-button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
 }
 
-.landing-card:hover {
+.landing-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  color: white;
+  z-index: 1;
+}
+
+.landing-header h1 {
+  font-size: clamp(3rem, 4vw, 3.8rem);
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.landing-header p {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.landing-client-card {
+  width: min(860px, 100%);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  cursor: pointer;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 30px 60px rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(15px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 2.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.landing-client-card::after {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  pointer-events: none;
+}
+
+.landing-client-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 45px 70px rgba(15, 23, 42, 0.45);
 }
 
-.landing-card:hover::before {
-  height: 100%;
-  opacity: 0.1;
+.client-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
-.card-icon {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 1.5rem;
+.client-icon {
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease;
-}
-
-.cliente-card .card-icon {
-  background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+  background: linear-gradient(135deg, #f97316, #f59e0b);
   color: white;
+  box-shadow: 0 10px 20px rgba(249, 115, 22, 0.4);
 }
 
-.admin-card .card-icon {
-  background: linear-gradient(135deg, #4361ee 0%, #3a86ff 100%);
-  color: white;
+.client-icon svg {
+  width: 44px;
+  height: 44px;
 }
 
-.landing-card:hover .card-icon {
-  transform: scale(1.1) rotate(5deg);
+.client-card-content h2 {
+  margin: 0 0 0.25rem;
+  font-size: 2.4rem;
+  color: #f8fafc;
 }
 
-.card-icon svg {
-  width: 40px;
-  height: 40px;
+.client-card-content p {
+  margin: 0;
+  color: rgba(248, 250, 252, 0.85);
+  max-width: 540px;
+  line-height: 1.6;
 }
 
-.landing-card h2 {
-  font-size: 2rem;
-  margin-bottom: 0.75rem;
-  color: #2d3748;
-  text-align: center;
+.client-action {
+  padding: 0.6rem 1.5rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: background 0.3s ease;
 }
 
-.landing-card p {
-  color: #718096;
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 1.05rem;
-}
-
-.card-arrow {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: bold;
-  transition: transform 0.3s ease;
-}
-
-.cliente-card .card-arrow {
-  color: #ff6b35;
-}
-
-.admin-card .card-arrow {
-  color: #4361ee;
-}
-
-.landing-card:hover .card-arrow {
-  transform: translateX(10px);
+.client-action:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .landing-footer {
-  color: white;
-  opacity: 0.8;
-  text-align: center;
-  margin-top: 2rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 1rem;
+  font-weight: 500;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .landing-client-card {
+    padding: 1.75rem;
+  }
+
+  .client-card-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .client-action {
+    align-self: stretch;
+    text-align: center;
+  }
 }
 
 @media (max-width: 768px) {

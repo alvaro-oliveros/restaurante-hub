@@ -1,0 +1,162 @@
+.reportes {
+  padding: 1.5rem;
+}
+
+.reportes h3 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.reportes .dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.stats-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.stats-card h4 {
+  margin-bottom: 0.75rem;
+}
+
+.mapa-card {
+  grid-column: span 2;
+}
+
+@media (max-width: 900px) {
+  .mapa-card {
+    grid-column: span 1;
+  }
+}
+
+.mapa-wrapper {
+  position: relative;
+}
+
+.mapa-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(2px);
+  border-radius: 12px;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.stats-card p {
+  margin-bottom: 0.35rem;
+  color: #4b5563;
+}
+
+.trend-list,
+.hora-list,
+.pagos-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.trend-list li,
+.hora-item,
+.pago-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.trend-list li:last-child,
+.hora-item:last-child,
+.pago-item:last-child {
+  border-bottom: none;
+}
+
+.hora-item span,
+.pago-item .medio {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.pago-item .detalle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.hora-item strong,
+.pago-item strong {
+  color: #0f172a;
+  font-size: 1rem;
+}
+
+.hora-item {
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.hora-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.hora-bar-fill {
+  height: 10px;
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
+  border-radius: 999px;
+  min-width: 40px;
+  max-width: 200px;
+  transition: width 0.2s ease;
+}
+
+.canales-card .barra-row {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.barra-label {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.barra-track {
+  background: #e5e7eb;
+  border-radius: 999px;
+  height: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.barra-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.barra-fill.delivery {
+  background: linear-gradient(90deg, #10b981, #34d399);
+}
+
+.barra-fill.local {
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
+}
+
+.barra-valor {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 0.95rem;
+}
