@@ -32,6 +32,7 @@ function CatalogoMenu() {
   const [medioPago, setMedioPago] = useState('EFECTIVO');
   const [pagoEnMesa, setPagoEnMesa] = useState(true);
   const [pedidoEnCursoId, setPedidoEnCursoId] = useState(null);
+  const estadosActivos = ['PENDIENTE', 'CONFIRMADO', 'EN_PREPARACION', 'LISTO', 'RECOGIDO', 'SERVIDO'];
 
   // Hasta que haya autenticación real, usamos un cliente fijo
   const clienteId = 1;
@@ -48,6 +49,9 @@ function CatalogoMenu() {
     const almacenado = localStorage.getItem(`pedidoEnCursoMesa_${mesaId}`);
     if (almacenado) {
       setPedidoEnCursoId(Number(almacenado));
+    }
+    if (!almacenado) {
+      recuperarPedidoActivo();
     }
   }, [mesaId]);
 
@@ -198,6 +202,26 @@ function CatalogoMenu() {
     }
   };
 
+  const recuperarPedidoActivo = async () => {
+    try {
+      const pedidosCliente = await pedidoService.obtenerPorCliente(clienteId);
+      const activo = pedidosCliente
+        .filter((p) => estadosActivos.includes(p.estado))
+        .sort((a, b) => {
+          const fa = a.fechaPedido ? new Date(a.fechaPedido).getTime() : 0;
+          const fb = b.fechaPedido ? new Date(b.fechaPedido).getTime() : 0;
+          if (fa !== fb) return fb - fa;
+          return (b.id || 0) - (a.id || 0);
+        })[0];
+      if (activo) {
+        setPedidoEnCursoId(activo.id);
+        localStorage.setItem(`pedidoEnCursoMesa_${mesaId}`, activo.id);
+      }
+    } catch (error) {
+      console.error('No se pudo recuperar pedido activo', error);
+    }
+  };
+
   const categorias = ['TODAS', ...new Set(productos.map(p => p.categoriaNombre).filter(Boolean))];
 
   const renderEstrellas = (rating) => {
@@ -234,8 +258,8 @@ function CatalogoMenu() {
 
       {pedidoEnCursoId && (
         <div className="seguimiento-wrapper">
-          <div className="seguimiento-info">
-            <strong>Pedido en curso:</strong> #{pedidoEnCursoId}
+          <div className="seguimiento-info pedido-en-curso">
+            <span>Pedido en curso: #{pedidoEnCursoId}</span>
             <button
               type="button"
               className="btn-secundario btn-mini"
@@ -246,8 +270,30 @@ function CatalogoMenu() {
             >
               Limpiar
             </button>
+            <button
+              type="button"
+              className="btn-secundario btn-mini"
+              onClick={recuperarPedidoActivo}
+            >
+              Recuperar
+            </button>
           </div>
           <SeguimientoPedido pedidoId={pedidoEnCursoId} refrescarCada={7000} />
+        </div>
+      )}
+
+      {!pedidoEnCursoId && (
+        <div className="seguimiento-placeholder">
+          <div className="seguimiento-info pedido-en-curso">
+            <span>¿Perdiste el seguimiento?</span>
+            <button
+              type="button"
+              className="btn-secundario btn-mini"
+              onClick={recuperarPedidoActivo}
+            >
+              Recuperar pedido activo
+            </button>
+          </div>
         </div>
       )}
 
@@ -506,7 +552,7 @@ function CatalogoMenu() {
                   ? 'Enviando...'
                   : pagoEnMesa
                     ? 'Confirmar (pago en mesa)'
-                    : 'Confirmar y pagar ahora'}
+                    : 'Confirmar pedido'}
               </button>
             </div>
           </div>

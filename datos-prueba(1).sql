@@ -198,6 +198,17 @@ FROM base b
 JOIN totales t ON t.pedido_id = b.id
 JOIN clientes c ON c.id = b.cliente_id;
 
+-- Marcar mesas como ocupadas si tienen pedidos presenciales activos
+UPDATE mesas
+SET estado = 'OCUPADA'
+WHERE id IN (
+  SELECT DISTINCT mesa_id
+  FROM pedidos
+  WHERE tipo = 'PRESENCIAL'
+    AND mesa_id IS NOT NULL
+    AND estado IN ('PENDIENTE','CONFIRMADO','EN_PREPARACION','LISTO','SERVIDO','PAGADO')
+);
+
 -- Detalles generados
 WITH detalle_pre AS (
     SELECT b.id AS pedido_id,

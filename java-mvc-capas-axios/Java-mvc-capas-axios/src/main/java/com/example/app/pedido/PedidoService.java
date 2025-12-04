@@ -119,7 +119,9 @@ public class PedidoService {
                     if (!pedidoDTO.getTokenMesa().equals(mesa.getCodigoQR())) {
                         throw new IllegalArgumentException("Token de mesa inválido");
                     }
-                    if (mesa.getEstado() != Mesa.EstadoMesa.DISPONIBLE && mesa.getEstado() != Mesa.EstadoMesa.RESERVADA) {
+                    // Permitimos nuevas rondas de pedido aunque la mesa esté ocupada o reservada;
+                    // solo bloqueamos si está en limpieza.
+                    if (mesa.getEstado() == Mesa.EstadoMesa.LIMPIEZA) {
                         throw new IllegalStateException("La mesa no está disponible para tomar pedidos");
                     }
                 }

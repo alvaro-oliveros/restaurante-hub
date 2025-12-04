@@ -120,6 +120,14 @@ h2, h3, h4 {
   margin-bottom: 8px;
 }
 
+.seguimiento-placeholder {
+  margin-top: 12px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: #f8fafc;
+}
+
 .seguimiento-header {
   display: flex;
   justify-content: space-between;

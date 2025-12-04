@@ -435,6 +435,10 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .item-controles button:hover {
