@@ -206,7 +206,7 @@ function CatalogoMenu() {
     try {
       const pedidosCliente = await pedidoService.obtenerPorCliente(clienteId);
       const activo = pedidosCliente
-        .filter((p) => estadosActivos.includes(p.estado))
+        .filter((p) => estadosActivos.includes(p.estado) && Number(p.mesaId) === Number(mesaId))
         .sort((a, b) => {
           const fa = a.fechaPedido ? new Date(a.fechaPedido).getTime() : 0;
           const fb = b.fechaPedido ? new Date(b.fechaPedido).getTime() : 0;
@@ -216,9 +216,12 @@ function CatalogoMenu() {
       if (activo) {
         setPedidoEnCursoId(activo.id);
         localStorage.setItem(`pedidoEnCursoMesa_${mesaId}`, activo.id);
+      } else {
+        alert('No se encontró un pedido activo en esta mesa.');
       }
     } catch (error) {
       console.error('No se pudo recuperar pedido activo', error);
+      alert('No se pudo recuperar pedido activo');
     }
   };
 
