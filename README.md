@@ -147,7 +147,7 @@ docker-compose up --build
 Servicios:
 - `backend`: Spring Boot en `http://localhost:8080` (usa el servicio `db` o apunta a tu Postgres local cambiando `SPRING_DATASOURCE_URL`).
 - `frontend`: Nginx sirviendo el build de Vite en `http://localhost:5173`.
-- `db`: PostgreSQL 14 en `localhost:5433` (user/pass: `postgres` / `admin`, db `restaurante_db`).
+- `db`: PostgreSQL 14 en `localhost:5434` (user/pass: `postgres` / `admin`, db `restaurante_db`).
 
 Si prefieres tu Postgres local, detén el servicio `db` y ajusta las variables en `docker-compose.yml` o exporta las tuyas al levantar.
 
