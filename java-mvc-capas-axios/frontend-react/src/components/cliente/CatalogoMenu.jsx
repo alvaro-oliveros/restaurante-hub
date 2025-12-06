@@ -216,12 +216,9 @@ function CatalogoMenu() {
       if (activo) {
         setPedidoEnCursoId(activo.id);
         localStorage.setItem(`pedidoEnCursoMesa_${mesaId}`, activo.id);
-      } else {
-        alert('No se encontró un pedido activo en esta mesa.');
       }
     } catch (error) {
       console.error('No se pudo recuperar pedido activo', error);
-      alert('No se pudo recuperar pedido activo');
     }
   };
 
