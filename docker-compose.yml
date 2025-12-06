@@ -8,7 +8,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/restaurante_db
+      # Usa tu Postgres local (puerto 5433 con datos cargados)
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5433/restaurante_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=admin
     depends_on:
